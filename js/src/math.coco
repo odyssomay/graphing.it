@@ -1,0 +1,2 @@
+sin = (x) ->
+  Math.sin(x)

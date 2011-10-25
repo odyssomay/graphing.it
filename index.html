@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+
+<html lang="en">
+	<head>
+		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+		<link rel="shortcut icon" href="/images/favicon.png" />
+		<title>graphing.it</title>
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<!--[if lte IE 9]><link rel="stylesheet" href="css/ie.css" type="text/css" media="screen" /><![endif]-->
+		<link rel="stylesheet" href="css/styles.css" type="text/css" />
+
+		<script type="text/javascript" src="js/css3-mediaqueries.js"></script>
+	</head>
+	<body>
+		<div class="row">
+			<div class="threecol">
+				<div id="heading">
+					<h1>graphing.it</h1>
+					<a href="/about.html">About</a>
+					<a href="/help.html">Help</a>
+					<a href="/discuss.html">Discuss</a>
+				</div>
+			</div>
+			<div class="sixcol"> 
+				<div id="draw_area"> </div>
+				<h2>Functions</h2>
+			</div>
+			<div class="threecol last"> </div>
+		</div>
+		<div data-bind="template: {name: 'functionTemplate', foreach: functions}"></div>
+		
+		<div class="row">
+			<div class="fivecol"> </div>
+			<div class="twocol">
+				<div id="add_function" data-bind="click: add_function"></div>
+			</div>
+			<div class="fivecol last"> </div>
+		</div>
+
+		<div class="row">
+			<div class="threecol"> </div>
+			<div class="sixcol">
+				<hr/>
+				<h2>View</h2>
+			</div>
+			<div class="threecol last"> </div>
+		</div>
+		<div class="row">
+			<div class="threecol"> </div>
+			<div class="onecol">
+				<div class="range">
+					Range
+				</div>
+			</div>
+			<div class="twocol">
+				<div class="x_range">
+					<input type="text" class="range_min" data-bind="value: range_x_min_raw">
+				</div>
+				<div class="y_range">
+					<input type="text" class="range_max" data-bind="value: range_y_max_raw">
+					<input type="text" class="range_min" style="margin-top: 33px;" data-bind="value: range_y_min_raw">
+				</div>
+				<div class="x_range">
+					<input type="text" class="range_max" style="margin-left: 85px;" data-bind="value: range_x_max_raw">
+				</div>
+			</div>
+			<div class="threecol"> 
+				Grid distance<br>
+				x
+				<input type="text" data-bind="value: grid_distance_x" style="display:inline; width: 3em;">
+				y
+				<input type="text" data-bind="value: grid_distance_y" style="display:inline; width: 3em">
+			</div>
+			<div class="threecol last"></div>
+		</div>	
+		<div class="row">
+			<div class="threecol"> </div>
+			<div class="sixcol">
+				<hr>
+			</div>
+			<div class="threecol last"> </div>
+		</div>
+
+		<div class="row">
+			<div class="fivecol"> </div>
+			<div class="twocol">
+				<div id="redraw_button"></div>
+			</div>
+			<div class="fivecol last"> </div>
+		</div>
+		<script type="text/html" id="functionTemplate">
+			<div class="row">
+				<div class="twocol"></div>
+				<div class="onecol">
+					<div class="options_button"></div>
+				</div>
+				<div class="sixcol">
+					<textarea data-bind="value: source"></textarea>
+				</div>
+				<div class="threecol last">
+				</div>
+			</div>
+		</script>
+
+		<script type="text/javascript" src="js/jquery-1.6.4.min.js"></script>
+		<script type='text/javascript' src='js/jquery.tmpl.js'></script>
+		<script type="text/javascript" src="js/raphael-min.js"></script>
+		<script type="text/javascript" src="js/knockout-1.2.1.js"></script>
+		<script type="text/javascript" src="js/core.js"></script>
+	</body>
+</html>
