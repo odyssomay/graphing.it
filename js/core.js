@@ -113,9 +113,9 @@
     }
     if (get_range_y()[0] < 0) {
       y_path_neg = (function() {
-        var _ref, _ref2, _results;
+        var _ref, _results;
         _results = [];
-        for (y = _ref = get_paper_y(0), _ref2 = get_range_y()[0]; _ref <= _ref2 ? y <= _ref2 : y >= _ref2; y += -distance_y) {
+        for (y = 0, _ref = get_range_y()[0]; 0 <= _ref ? y <= _ref : y >= _ref; y += -distance_y) {
           _results.push("M0," + get_paper_y(y) + "l" + paper.width + ",0");
         }
         return _results;

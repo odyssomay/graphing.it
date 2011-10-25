@@ -101,7 +101,7 @@ draw_grid = ->
     x_path_pos = []
   
   if get_range_y()[0] < 0
-    y_path_neg = for y in [get_paper_y(0)..get_range_y()[0]] by -distance_y
+    y_path_neg = for y in [0..get_range_y()[0]] by -distance_y
       "M0," + get_paper_y(y) + "l" + paper.width + ",0"
   else
     y_path_neg = []
