@@ -130,23 +130,23 @@ button:hover {
 	-ms-box-sizing: border-box;
 }
 
+
 #range_x_min {
-	left: -30px;
 	top: 15px;
 }
 
 #range_x_max {
-	left: 52px;
+	left: 82px;
 	top: -15px;
-}
+	}
 
 #range_y_min {
 	top: 32px;
-	left: -77px;
+	left: -47px;
 }
 
 #range_y_max {
-	left: -33px;
+	left: -3px;
 }
 
 .border_box {
