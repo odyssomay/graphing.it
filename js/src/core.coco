@@ -1,7 +1,8 @@
 
 example_functions = ["sin(x)", "x * tan(x)", "pow(x, x)", 
   "sin(1/x)", "tan(x) * sin(x)", "cos(tan(x))",
-  "x * tan(x) * sin(x)", "sin(x) * x", "cos(tan(x)) / sin(x)"]
+  "x * tan(x) * sin(x)", "sin(x) * x", "cos(tan(x)) / sin(x)",
+  "pow(abs(x), cos(x))", "pow(abs(x), sin(x))"]
 
 rand_nth = (coll) ->
   coll[Math.floor(Math.random() * coll.length)]

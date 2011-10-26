@@ -1,6 +1,6 @@
 (function() {
   var a_p, add_function, animate, animations, axes_object, calculate_path, calculate_points, draw_axes, draw_border, draw_graph, draw_grid, example_functions, get_paper_x, get_paper_y, get_range_x, get_range_y, grid_object, init_button, options_string, paper, r, r_p, rand_nth, random, redraw, redraw_button, start_animation, v_o_p, viewModel, view_options;
-  example_functions = ["sin(x)", "x * tan(x)", "pow(x, x)", "sin(1/x)", "tan(x) * sin(x)", "cos(tan(x))", "x * tan(x) * sin(x)", "sin(x) * x", "cos(tan(x)) / sin(x)"];
+  example_functions = ["sin(x)", "x * tan(x)", "pow(x, x)", "sin(1/x)", "tan(x) * sin(x)", "cos(tan(x))", "x * tan(x) * sin(x)", "sin(x) * x", "cos(tan(x)) / sin(x)", "pow(abs(x), cos(x))", "pow(abs(x), sin(x))"];
   rand_nth = function(coll) {
     return coll[Math.floor(Math.random() * coll.length)];
   };
