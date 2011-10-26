@@ -1,4 +1,4 @@
-var abs, acos, asin, atan, atan2, ceil, cos, exp, floor, log, max, min, pow, random, round, sin, sqrt, tan;
+var abs, acos, asin, atan, atan2, ceil, cos, e, exp, floor, log, max, min, pow, random, round, sin, sqrt, tan;
 abs = function(x) {
   return Math.abs(x);
 };
@@ -53,3 +53,4 @@ sqrt = function(x) {
 tan = function(x) {
   return Math.tan(x);
 };
+e = Math.E;

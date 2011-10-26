@@ -16,3 +16,4 @@ round = (x) -> Math.round(x)
 sin = (x) -> Math.sin(x)
 sqrt = (x) -> Math.sqrt(x)
 tan = (x) -> Math.tan(x)
+e = Math.E

@@ -1,6 +1,6 @@
 (function() {
-  var a_p, add_function, animate, animations, axes_object, calculate_path, calculate_points, draw_axes, draw_border, draw_graph, draw_grid, example_functions, get_paper_x, get_paper_y, get_range_x, get_range_y, grid_object, paper, r, r_p, rand_nth, random, redraw, redraw_button, start_animation, viewModel;
-  example_functions = ["sin(x)", "x * tan(x)", "pow(x, x)", "sin(1/x)", "tan(x) * sin(x)", "cos(tan(x))", "x * tan(x) * sin(x)", "sin(x) * x"];
+  var a_p, add_function, animate, animations, axes_object, calculate_path, calculate_points, draw_axes, draw_border, draw_graph, draw_grid, example_functions, get_paper_x, get_paper_y, get_range_x, get_range_y, grid_object, init_button, options_string, paper, r, r_p, rand_nth, random, redraw, redraw_button, start_animation, v_o_p, viewModel, view_options;
+  example_functions = ["sin(x)", "x * tan(x)", "pow(x, x)", "sin(1/x)", "tan(x) * sin(x)", "cos(tan(x))", "x * tan(x) * sin(x)", "sin(x) * x", "cos(tan(x)) / sin(x)"];
   rand_nth = function(coll) {
     return coll[Math.floor(Math.random() * coll.length)];
   };
@@ -26,8 +26,20 @@
     range_y_max_raw: "10",
     grid_distance_x: "1",
     grid_distance_y: "1",
-    resolution: 0.01
+    step_size: ko.observable(0.01)
   };
+  viewModel.step_size_raw = ko.dependentObservable({
+    read: viewModel.step_size,
+    write: function(value) {
+      value = parseFloat(value);
+      if (isNaN(value)) {
+        return this.step_size(0.1);
+      } else {
+        return this.step_size(value);
+      }
+    },
+    owner: viewModel
+  });
   ko.applyBindings(viewModel);
   get_range_x = function() {
     return [parseInt(viewModel.range_x_min_raw), parseInt(viewModel.range_x_max_raw)];
@@ -158,7 +170,7 @@
   calculate_points = function(f) {
     var x, _ref, _ref2, _ref3, _results;
     _results = [];
-    for (x = _ref = get_range_x()[0], _ref2 = get_range_x()[1], _ref3 = viewModel.resolution; _ref <= _ref2 ? x <= _ref2 : x >= _ref2; x += _ref3) {
+    for (x = _ref = get_range_x()[0], _ref2 = get_range_x()[1], _ref3 = viewModel.step_size(); _ref <= _ref2 ? x <= _ref2 : x >= _ref2; x += _ref3) {
       _results.push([get_paper_x(x), get_paper_y(f(x))]);
     }
     return _results;
@@ -212,33 +224,33 @@
   r = paper.rect(0, 0, paper.width, paper.height);
   r.attr("fill", "#fff");
   redraw();
-  add_function = Raphael("add_function", 40, 40);
-  a_p = add_function.path("M25.979,12.896 19.312,12.896 19.312,6.229 12.647,6.229 12.647,12.896 5.979,12.896 5.979,19.562 12.647,19.562 12.647,26.229 19.312,26.229 19.312,19.562 25.979,19.562z");
-  a_p.attr({
-    "fill": "#333",
-    "stroke-opacity": "0"
-  });
-  $('#add_function').hover((function() {
-    return a_p.attr({
-      "fill": "#000"
+  init_button = function(path, id) {
+    path.attr({
+      "fill": "#333",
+      "stroke-opacity": "0"
     });
-  }), (function() {
-    return a_p.attr("fill", "#333");
-  }));
+    return $(id).hover((function() {
+      return path.attr({
+        "fill": "#000"
+      });
+    }), (function() {
+      return path.attr("fill", "#333");
+    }));
+  };
+  options_string = "M26.834,14.693c1.816-2.088,2.181-4.938,1.193-7.334l-3.646,4.252l-3.594-0.699L19.596,7.45l3.637-4.242c-2.502-0.63-5.258,0.13-7.066,2.21c-1.907,2.193-2.219,5.229-1.039,7.693L5.624,24.04c-1.011,1.162-0.888,2.924,0.274,3.935c1.162,1.01,2.924,0.888,3.935-0.274l9.493-10.918C21.939,17.625,24.918,16.896,26.834,14.693z";
   redraw_button = Raphael("redraw_button", 40, 40);
   r_p = redraw_button.path("M15.999,4.308c1.229,0.001,2.403,0.214,3.515,0.57L18.634,6.4h6.247l-1.562-2.706L21.758,0.99l-0.822,1.425c-1.54-0.563-3.2-0.878-4.936-0.878c-7.991,0-14.468,6.477-14.468,14.468c0,3.317,1.128,6.364,3.005,8.805l2.2-1.689c-1.518-1.973-2.431-4.435-2.436-7.115C4.312,9.545,9.539,4.318,15.999,4.308zM27.463,7.203l-2.2,1.69c1.518,1.972,2.431,4.433,2.435,7.114c-0.011,6.46-5.238,11.687-11.698,11.698c-1.145-0.002-2.24-0.188-3.284-0.499l0.828-1.432H7.297l1.561,2.704l1.562,2.707l0.871-1.511c1.477,0.514,3.058,0.801,4.709,0.802c7.992-0.002,14.468-6.479,14.47-14.47C30.468,12.689,29.339,9.643,27.463,7.203z");
-  r_p.attr({
-    "fill": "#333",
-    "stroke-opacity": "0"
-  });
-  $('#redraw_button').hover((function() {
-    return r_p.attr({
-      "fill": "#000"
-    });
-  }), (function() {
-    return r_p.attr("fill", "#333");
-  }));
+  init_button(r_p, '#redraw_button');
   $('#redraw_button').click(function() {
     return redraw();
   });
+  view_options = Raphael("view_options", 40, 40);
+  v_o_p = view_options.path(options_string);
+  init_button(v_o_p, '#view_options');
+  $('#view_options').click(function() {
+    return $('#draw_options_content').slideToggle(200);
+  });
+  add_function = Raphael("add_function", 40, 40);
+  a_p = add_function.path("M25.979,12.896 19.312,12.896 19.312,6.229 12.647,6.229 12.647,12.896 5.979,12.896 5.979,19.562 12.647,19.562 12.647,26.229 19.312,26.229 19.312,19.562 25.979,19.562z");
+  init_button(a_p, '#add_function');
 }).call(this);
