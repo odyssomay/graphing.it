@@ -1,6 +1,6 @@
 (function() {
   var a_p, add_function, animate, animations, axes_object, calculate_path, calculate_points, draw_axes, draw_border, draw_graph, draw_grid, example_functions, get_paper_x, get_paper_y, get_range_x, get_range_y, grid_object, paper, r, r_p, rand_nth, random, redraw, redraw_button, start_animation, viewModel;
-  example_functions = ["Math.sin(x)", "Math.sin(x) * x"];
+  example_functions = ["sin(x)", "x * tan(x)", "pow(x, x)", "sin(1/x)", "tan(x) * sin(x)", "cos(tan(x))", "x * tan(x) * sin(x)", "sin(x) * x"];
   rand_nth = function(coll) {
     return coll[Math.floor(Math.random() * coll.length)];
   };
