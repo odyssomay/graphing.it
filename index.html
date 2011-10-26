@@ -37,10 +37,60 @@
 			</div>
 			<div class="sixcol"> 
 				<div id="draw_area"> </div>
-				<div id="redraw_button"></div>
-				<h2>Functions</h2>
+				<div id="draw_options_area">
+					<div id="redraw_button" style="display:inline"></div>
+					<div id="view_options" style="display:inline"></div>
+				</div>
 			</div>
 			<div class="threecol last"> </div>
+		</div>
+
+		<div id="draw_options_content" class="row">
+			<div class="threecol"> </div>
+			<div style="background: white">
+				<div class="onecol">
+					<div class="range_text">
+						Range
+					</div>
+				</div>
+				<div class="twocol">
+					<div class="range">
+						<input type="text" id="range_x_min" data-bind="value: range_x_min_raw">
+						<input type="text" id="range_y_max" data-bind="value: range_y_max_raw">
+						<input type="text" id="range_y_min" data-bind="value: range_y_min_raw">
+						<input type="text" id="range_x_max" data-bind="value: range_x_max_raw">
+					</div>
+				</div>
+				<div class="threecol"> 
+					<table>
+						<tr>
+							<td>Grid distance</td>
+							<td>Resolution</td>
+						</tr>
+						<tr>
+							<td>
+								x
+								<input type="text" data-bind="value: grid_distance_x" style="display:inline; width: 2em;">
+								y
+								<input type="text" data-bind="value: grid_distance_y" style="display:inline; width: 2em">
+							</td>
+							<td style="margin-left: 10px">
+								<input type="text" style="display: inline; width: 3em;" 
+								class="border_box" data-bind="value: step_size_raw, valueUpdate: 'keyup'">
+							</td>
+						</tr>
+					</table>
+				</div>
+			</div>
+			<div class="threecol last"></div>
+		</div>	
+
+		<div class="row">
+			<div class="threecol"></div>
+			<div class="sixcol">
+				<h2>Functions</h2>
+			</div>
+			<div class="threecol last"></div>
 		</div>
 		<div data-bind="template: {name: 'functionTemplate', foreach: functions}"></div>
 		
@@ -51,50 +101,6 @@
 			</div>
 			<div class="fivecol last"> </div>
 		</div>
-
-		<div class="row">
-			<div class="threecol"> </div>
-			<div class="sixcol">
-				<hr/>
-				<h2>View</h2>
-			</div>
-			<div class="threecol last"> </div>
-		</div>
-		<div class="row">
-			<div class="threecol"> </div>
-			<div class="onecol">
-				<div class="range">
-					Range
-				</div>
-			</div>
-			<div class="twocol">
-				<div class="range">
-					<div class="x_range">
-						<input type="text" class="range_min" data-bind="value: range_x_min_raw">
-					</div>
-					<div class="y_range">
-						<input type="text" class="range_max" data-bind="value: range_y_max_raw">
-						<input type="text" class="range_min" style="margin-top: 33px;" data-bind="value: range_y_min_raw">
-					</div>
-					<div class="x_range">
-						<input type="text" class="range_max" style="margin-left: 85px;" data-bind="value: range_x_max_raw">
-					</div>
-				</div>
-			</div>
-			<div class="twocol"> 
-				Grid distance<br>
-				x
-				<input type="text" data-bind="value: grid_distance_x" style="display:inline; width: 3em;">
-				y
-				<input type="text" data-bind="value: grid_distance_y" style="display:inline; width: 3em">
-			</div>
-			<div class="onecol">
-				x-step
-				<input type="text" class="border_box" data-bind="value: x_step_raw, valueUpdate: 'keyup'">
-			</div>
-			<div class="threecol last"></div>
-		</div>	
-
 		<script type="text/html" id="functionTemplate">
 			<div class="row">
 				<div class="twocol"></div>
@@ -109,6 +115,7 @@
 			</div>
 		</script>
 
+		<!--<script type="text/javascript" data-main="js/main" src="js/require.js"></script>-->
 		<script type="text/javascript" src="js/jquery-1.6.4.min.js"></script>
 		<script type='text/javascript' src='js/jquery.tmpl.js'></script>
 		<script type="text/javascript" src="js/raphael-min.js"></script>
