@@ -79,6 +79,12 @@ textarea {
 	width: 100%;
 	resize: vertical;
 	box-shadow: inset 1px 1px 3px #333;
+	/* From: http://stackoverflow.com/questions/271067/how-can-i-make-a-textarea-100-width-without-overflowing-when-padding-is-present/4156343#4156343 
+	 * */
+	box-sizing: border-box;
+	-webkit-box-sizing:border-box;
+	-moz-box-sizing: border-box;
+	-ms-box-sizing: border-box;
 }
 
 input[type="text"] {
@@ -133,6 +139,7 @@ button:hover {
 
 .range {
 	line-height: 60px;
+	height: 60px;
 }
 
 #heading {
