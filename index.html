@@ -37,6 +37,7 @@
 			</div>
 			<div class="sixcol"> 
 				<div id="draw_area"> </div>
+				<div id="redraw_button"></div>
 				<h2>Functions</h2>
 			</div>
 			<div class="threecol last"> </div>
@@ -80,30 +81,20 @@
 					</div>
 				</div>
 			</div>
-			<div class="threecol"> 
+			<div class="twocol"> 
 				Grid distance<br>
 				x
 				<input type="text" data-bind="value: grid_distance_x" style="display:inline; width: 3em;">
 				y
 				<input type="text" data-bind="value: grid_distance_y" style="display:inline; width: 3em">
 			</div>
+			<div class="onecol">
+				x-step
+				<input type="text" class="border_box" data-bind="value: x_step_raw, valueUpdate: 'keyup'">
+			</div>
 			<div class="threecol last"></div>
 		</div>	
-		<div class="row">
-			<div class="threecol"> </div>
-			<div class="sixcol">
-				<hr>
-			</div>
-			<div class="threecol last"> </div>
-		</div>
 
-		<div class="row">
-			<div class="fivecol"> </div>
-			<div class="twocol">
-				<div id="redraw_button"></div>
-			</div>
-			<div class="fivecol last"> </div>
-		</div>
 		<script type="text/html" id="functionTemplate">
 			<div class="row">
 				<div class="twocol"></div>
