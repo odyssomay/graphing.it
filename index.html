@@ -40,6 +40,7 @@
 				<div id="draw_options_area">
 					<div id="redraw_button" style="display:inline"></div>
 					<div id="view_options" style="display:inline"></div>
+					<div id="save_button" style="display:inline"></div>
 				</div>
 			</div>
 			<div class="threecol last"> </div>
@@ -57,7 +58,7 @@
 					</tr>
 					<tr>
 						<td>
-							<table id="range" style="display:inline;">
+							<table id="range">
 								<tr>
 									<td>
 										<input type="text" data-bind="value: range_x_min_raw">
@@ -74,13 +75,13 @@
 						</td>
 						<td>
 							x
-							<input type="text" data-bind="value: grid_distance_x_raw" style="display:inline; width: 2em;">
+							<input type="text" data-bind="value: grid_distance_x_raw" style="display:inline; width: 3em;">
+							<br>
 							y
-							<input type="text" data-bind="value: grid_distance_y_raw" style="display:inline; width: 2em">
+							<input type="text" data-bind="value: grid_distance_y_raw" style="display:inline; width: 3em">
 						</td>
 						<td>
-							<input type="text" style="display: inline; width: 6em;" 
-							class="border_box" data-bind="value: step_size_raw">
+							<input type="text" style="width: 3em;" data-bind="value: step_size_raw">
 						</td>
 					</tr>
 				</table>
