@@ -1,5 +1,5 @@
 (function() {
-  var a_p, add_function, animate, animations, axes_object, calculate_path, calculate_points, draw_axes, draw_border, draw_graph, draw_grid, example_functions, get_paper_x, get_paper_y, get_range_x, get_range_y, grid_object, init_button, options_string, paper, r, r_p, rand_nth, random, redraw, redraw_button, start_animation, v_o_p, viewModel, view_options;
+  var a_p, add_function, animate, animations, axes_object, calculate_path, calculate_points, draw_axes, draw_border, draw_graph, draw_grid, example_functions, get_paper_x, get_paper_y, get_range_x, get_range_y, grid_object, init_button, number_observable, options_string, paper, r, r_p, rand_nth, random, read_ko_num, redraw, redraw_button, start_animation, v_o_p, viewModel, view_options;
   example_functions = ["sin(x)", "x * tan(x)", "pow(x, x)", "sin(1/x)", "tan(x) * sin(x)", "cos(tan(x))", "x * tan(x) * sin(x)", "sin(x) * x", "cos(tan(x)) / sin(x)", "pow(abs(x), cos(x))", "pow(abs(x), sin(x))"];
   rand_nth = function(coll) {
     return coll[Math.floor(Math.random() * coll.length)];
@@ -20,32 +20,63 @@
         stroke: "#" + random(9) + random(9) + random(9)
       });
     },
-    range_x_min_raw: "-10",
-    range_x_max_raw: "10",
-    range_y_min_raw: "-10",
-    range_y_max_raw: "10",
-    grid_distance_x: "1",
-    grid_distance_y: "1",
+    range_x_min: ko.observable(-10),
+    range_x_max: ko.observable(10),
+    range_y_min: ko.observable(-10),
+    range_y_max: ko.observable(10),
+    grid_distance_x: ko.observable(1),
+    grid_distance_y: ko.observable(1),
     step_size: ko.observable(0.01)
   };
-  viewModel.step_size_raw = ko.dependentObservable({
-    read: viewModel.step_size,
-    write: function(value) {
-      value = parseFloat(value);
-      if (isNaN(value)) {
-        return this.step_size(0.1);
-      } else {
-        return this.step_size(value);
+  number_observable = function(obj, min, max, not_eq, default_value) {
+    return ko.dependentObservable({
+      read: function() {
+        return String(obj());
+      },
+      write: function(value) {
+        var v;
+        v = parseFloat(value);
+        if (isNaN(v)) {
+          v = default_value;
+        }
+        if (!min === null) {
+          v = Math.max(min, v);
+        }
+        if (!max === null) {
+          v = Math.min(v, max);
+        }
+        return obj(v);
       }
-    },
-    owner: viewModel
-  });
+    });
+  };
+  viewModel.step_size_raw = number_observable(viewModel.step_size, 0.0001, null, 0, 0.1);
+  viewModel.range_x_min_raw = number_observable(viewModel.range_x_min, null, null, null, -10);
+  viewModel.range_x_max_raw = number_observable(viewModel.range_x_max, null, null, null, 10);
+  viewModel.range_y_min_raw = number_observable(viewModel.range_y_min, null, null, null, -10);
+  viewModel.range_y_max_raw = number_observable(viewModel.range_y_max, null, null, null, 10);
+  viewModel.grid_distance_x_raw = number_observable(viewModel.grid_distance_x, 0.01, null, 0, 1);
+  viewModel.grid_distance_y_raw = number_observable(viewModel.grid_distance_y, 0.01, null, 0, 1);
+  read_ko_num = function(obj, min, max, default_value, not_eq) {
+    var v;
+    v = parseFloat(obj());
+    if (isNaN(v)) {
+      v = default_value;
+    }
+    if (min) {
+      v = Math.max(min, v);
+    }
+    if (max) {
+      v = Math.min(v, max);
+    }
+    obj(String(v));
+    return v;
+  };
   ko.applyBindings(viewModel);
   get_range_x = function() {
-    return [parseInt(viewModel.range_x_min_raw), parseInt(viewModel.range_x_max_raw)];
+    return [viewModel.range_x_min(), viewModel.range_x_max()];
   };
   get_range_y = function() {
-    return [parseInt(viewModel.range_y_min_raw), parseInt(viewModel.range_y_max_raw)];
+    return [viewModel.range_y_min(), viewModel.range_y_max()];
   };
   paper = Raphael("draw_area", 300, 300);
   animations = [];
@@ -97,8 +128,8 @@
   grid_object = null;
   draw_grid = function() {
     var distance_x, distance_y, p, x, x_path_neg, x_path_pos, y, y_path_neg, y_path_pos;
-    distance_x = parseFloat(viewModel.grid_distance_x);
-    distance_y = parseFloat(viewModel.grid_distance_y);
+    distance_x = viewModel.grid_distance_x();
+    distance_y = viewModel.grid_distance_y();
     if (get_range_x()[0] < 0) {
       x_path_neg = (function() {
         var _ref, _results;
