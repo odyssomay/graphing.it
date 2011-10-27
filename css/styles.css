@@ -161,6 +161,7 @@ button:hover {
 	display: none;	
 	background: #AAA;
 	padding: 30px;
+	padding-top: 20px;
 	margin: 0.5em 0 1em 0;
 	border-radius: 5px;
 	box-shadow: 0 3px 3px #555;
@@ -179,15 +180,6 @@ button:hover {
 .content_area {
 	line-height: 1.5em;
 	margin-top: 6em;
-}
-
-#options_arrow {
-	width: 0;
-	height: 0;
-	border-left: 5px solid transparent;
-	border-right: 5px solid transparent;
-
-	border-bottom: 5px solid black;
 }
 
 
