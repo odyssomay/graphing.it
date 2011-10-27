@@ -16,9 +16,12 @@ random = (max) ->
 viewModel = {
   functions: ko.observableArray([])
   add_function: -> 
+    prev_id = Math.max.apply(null, obj.id for obj in this.functions())
+    if this.functions().length == 0 then prev_id = 0
     this.functions.push({
       source: rand_nth(example_functions)
       stroke: "#" + random(9) + random(9) + random(9)
+      id: 1 + prev_id
       })
   
   range_x_min: ko.observable(-10)

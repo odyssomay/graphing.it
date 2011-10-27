@@ -10,9 +10,24 @@
   viewModel = {
     functions: ko.observableArray([]),
     add_function: function() {
+      var obj, prev_id;
+      prev_id = Math.max.apply(null, (function() {
+        var _i, _len, _ref, _results;
+        _ref = this.functions();
+        _results = [];
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          obj = _ref[_i];
+          _results.push(obj.id);
+        }
+        return _results;
+      }).call(this));
+      if (this.functions().length === 0) {
+        prev_id = 0;
+      }
       return this.functions.push({
         source: rand_nth(example_functions),
-        stroke: "#" + random(9) + random(9) + random(9)
+        stroke: "#" + random(9) + random(9) + random(9),
+        id: 1 + prev_id
       });
     },
     range_x_min: ko.observable(-10),
