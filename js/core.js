@@ -8,15 +8,10 @@
     return Math.round(Math.random() * max);
   };
   viewModel = {
-    functions: ko.observableArray([
-      {
-        source: rand_nth(example_functions),
-        stroke: "#800"
-      }
-    ]),
+    functions: ko.observableArray([]),
     add_function: function() {
       return this.functions.push({
-        source: "",
+        source: rand_nth(example_functions),
         stroke: "#" + random(9) + random(9) + random(9)
       });
     },
@@ -28,6 +23,7 @@
     grid_distance_y: ko.observable(1),
     step_size: ko.observable(0.01)
   };
+  viewModel.add_function();
   number_observable = function(obj, min, max, not_eq, default_value) {
     return ko.dependentObservable({
       read: function() {

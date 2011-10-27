@@ -14,8 +14,12 @@ random = (max) ->
   Math.round(Math.random() * max)
 
 viewModel = {
-  functions: ko.observableArray([{source: rand_nth(example_functions), stroke: "#800"}])
-  add_function: -> this.functions.push({source: "", stroke: "#" + random(9) + random(9) + random(9)})
+  functions: ko.observableArray([])
+  add_function: -> 
+    this.functions.push({
+      source: rand_nth(example_functions)
+      stroke: "#" + random(9) + random(9) + random(9)
+      })
   
   range_x_min: ko.observable(-10)
   range_x_max: ko.observable(10)
@@ -26,6 +30,8 @@ viewModel = {
   grid_distance_y: ko.observable(1)
   step_size: ko.observable(0.01)
 }
+
+viewModel.add_function()
 
 number_observable = (obj, min, max, not_eq, default_value) ->
   ko.dependentObservable {
