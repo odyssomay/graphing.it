@@ -120,33 +120,13 @@ button:hover {
 	line-height: 60px;
 }
 
-.range input {
-	position: relative;
-	width: 40px;
-	height: 30px;
-	box-sizing: border-box;
-	-webkit-box-sizing:border-box;
-	-moz-box-sizing: border-box;
-	-ms-box-sizing: border-box;
+#range td {
+	padding: 0px;
+	margin: 0px;
 }
 
-
-#range_x_min {
-	top: 15px;
-}
-
-#range_x_max {
-	left: 82px;
-	top: -15px;
-	}
-
-#range_y_min {
-	top: 32px;
-	left: -47px;
-}
-
-#range_y_max {
-	left: -3px;
+#range input[type="text"] {
+	width: 3em;
 }
 
 .border_box {
@@ -178,8 +158,16 @@ button:hover {
 }
 
 #draw_options_content {
-	display: none;
-	height: 90px;
+	display: none;	
+	background: #AAA;
+	padding: 30px;
+	margin: 0.5em 0 1em 0;
+	border-radius: 5px;
+	box-shadow: 0 3px 3px #555;
+	box-sizing: border-box;
+	-webkit-box-sizing:border-box;
+	-moz-box-sizing: border-box;
+	-ms-box-sizing: border-box;
 }
 
 #add_function, #redraw_button {
@@ -192,6 +180,16 @@ button:hover {
 	line-height: 1.5em;
 	margin-top: 6em;
 }
+
+#options_arrow {
+	width: 0;
+	height: 0;
+	border-left: 5px solid transparent;
+	border-right: 5px solid transparent;
+
+	border-bottom: 5px solid black;
+}
+
 
 /* ============================= */
 /* ! Layout for mobile version   */

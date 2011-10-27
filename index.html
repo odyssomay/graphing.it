@@ -45,42 +45,51 @@
 			<div class="threecol last"> </div>
 		</div>
 
-		<div id="draw_options_content" class="row">
+		<div class="row">
 			<div class="threecol"> </div>
-			<div style="background: white">
-				<div class="onecol">
-					<div class="range_text">
-						Range
-					</div>
-				</div>
-				<div class="twocol">
-					<div class="range">
-						<input type="text" id="range_x_min" data-bind="value: range_x_min_raw">
-						<input type="text" id="range_y_max" data-bind="value: range_y_max_raw">
-						<input type="text" id="range_y_min" data-bind="value: range_y_min_raw">
-						<input type="text" id="range_x_max" data-bind="value: range_x_max_raw">
-					</div>
-				</div>
-				<div class="threecol"> 
-					<table>
-						<tr>
-							<td>Grid distance</td>
-							<td>Resolution</td>
-						</tr>
-						<tr>
-							<td>
-								x
-								<input type="text" data-bind="value: grid_distance_x" style="display:inline; width: 2em;">
-								y
-								<input type="text" data-bind="value: grid_distance_y" style="display:inline; width: 2em">
-							</td>
-							<td style="margin-left: 10px">
-								<input type="text" style="display: inline; width: 3em;" 
-								class="border_box" data-bind="value: step_size_raw, valueUpdate: 'keyup'">
-							</td>
-						</tr>
-					</table>
-				</div>
+			<div class="sixcol" id="draw_options_content">
+				<h2>View options</h2>
+				<table style="width: 100%;">
+					<tr>
+						<td>Range</td>
+						<td>Grid distance</td>
+						<td>Resolution</td>
+					</tr>
+					<tr>
+						<td>
+							<table id="range" style="display:inline;">
+								<tr>
+									<td>
+										<input type="text" data-bind="value: range_x_min_raw">
+									</td>
+									<td>
+										<input type="text" data-bind="value: range_y_max_raw"><br>
+										<input type="text" data-bind="value: range_y_min_raw">
+									</td>
+									<td>
+										<input type="text" data-bind="value: range_x_max_raw">
+									</td>
+								</tr>
+							</table>
+						</td>
+						<td>
+							x
+							<input type="text" data-bind="value: grid_distance_x_raw" style="display:inline; width: 2em;">
+							y
+							<input type="text" data-bind="value: grid_distance_y_raw" style="display:inline; width: 2em">
+						</td>
+						<td>
+							<input type="text" style="display: inline; width: 6em;" 
+							class="border_box" data-bind="value: step_size_raw">
+						</td>
+				<!--<div class="range">
+					<input type="text" id="range_x_min" data-bind="value: range_x_min_raw">
+					<input type="text" id="range_y_max" data-bind="value: range_y_max_raw">
+					<input type="text" id="range_y_min" data-bind="value: range_y_min_raw">
+					<input type="text" id="range_x_max" data-bind="value: range_x_max_raw">
+				</div>-->
+					</tr>
+				</table>
 			</div>
 			<div class="threecol last"></div>
 		</div>	
