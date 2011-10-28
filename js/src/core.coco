@@ -229,11 +229,18 @@ construct_path = (points, last_point) ->
     ""
 
 draw_path = (fn_object) ->
-  points = calculate_points(fn_object)
-  t_points = transform_points(points)
-  path_string = 'M' + construct_path(t_points).substr(1)
-  animation = Raphael.animation({path: path_string, stroke: fn_object.stroke}, 300, "<>")
-  animate(fn_object.element, animation)
+  fn_error_id = '#function_error' + fn_object.id
+  try
+    $(fn_error_id).text("...")
+    points = calculate_points(fn_object)
+    t_points = transform_points(points)
+    path_string = 'M' + construct_path(t_points).substr(1)
+    animation = Raphael.animation({path: path_string, stroke: fn_object.stroke}, 300, "<>")
+    animate(fn_object.element, animation)
+    $(fn_error_id).fadeOut(600)
+  catch error
+    $('#function_error' + fn_object.id).text(String(error))
+    $(fn_error_id).fadeIn(400)
 
 redraw = ->
   draw_grid()

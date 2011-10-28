@@ -198,6 +198,18 @@ button:hover {
 	box-shadow: 0 1px 1px black;
 }
 
+.function_error_style {
+	font-size: 0.9em;
+	display: none;
+	position: relative;
+	left: -2.5%;
+	background: #A55;
+	border-radius: 10px;
+	border: 1px solid #800;
+	padding: 0.8em;
+}
+	
+
 /* ============================= */
 /* ! Layout for mobile version   */
 /* ============================= */

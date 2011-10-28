@@ -284,15 +284,23 @@
     }
   };
   draw_path = function(fn_object) {
-    var animation, path_string, points, t_points;
-    points = calculate_points(fn_object);
-    t_points = transform_points(points);
-    path_string = 'M' + construct_path(t_points).substr(1);
-    animation = Raphael.animation({
-      path: path_string,
-      stroke: fn_object.stroke
-    }, 300, "<>");
-    return animate(fn_object.element, animation);
+    var animation, fn_error_id, path_string, points, t_points;
+    fn_error_id = '#function_error' + fn_object.id;
+    try {
+      $(fn_error_id).text("...");
+      points = calculate_points(fn_object);
+      t_points = transform_points(points);
+      path_string = 'M' + construct_path(t_points).substr(1);
+      animation = Raphael.animation({
+        path: path_string,
+        stroke: fn_object.stroke
+      }, 300, "<>");
+      animate(fn_object.element, animation);
+      return $(fn_error_id).fadeOut(600);
+    } catch (error) {
+      $('#function_error' + fn_object.id).text(String(error));
+      return $(fn_error_id).fadeIn(400);
+    }
   };
   redraw = function() {
     var fn_object, _k, _len3, _ref3;
