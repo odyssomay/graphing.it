@@ -18,11 +18,15 @@ viewModel = {
   add_function: -> 
     prev_id = Math.max.apply(null, obj.id for obj in this.functions())
     if this.functions().length == 0 then prev_id = 0
-    this.functions.push({
+    new_fn_object = {
       source: rand_nth(example_functions)
       stroke: "#" + random(9) + random(9) + random(9)
       id: 1 + prev_id
-      })
+      }
+    this.functions.push(new_fn_object)
+    init_fn_object(new_fn_object)
+  
+  fn_types: ["a", "b", "c"]
   
   range_x_min: ko.observable(-10)
   range_x_max: ko.observable(10)
@@ -34,9 +38,7 @@ viewModel = {
   step_size: ko.observable(0.01)
 }
 
-viewModel.add_function()
-
-number_observable = (obj, min, max, not_eq, default_value) ->
+number_observable = (obj, min, max, default_value) ->
   ko.dependentObservable {
     read: ->
       String(obj())
@@ -49,23 +51,14 @@ number_observable = (obj, min, max, not_eq, default_value) ->
       obj(v)
   }
 
-viewModel.step_size_raw = number_observable(viewModel.step_size, 0.0001, null, 0, 0.1)
-viewModel.range_x_min_raw = number_observable(viewModel.range_x_min, null, null, null, -10)
-viewModel.range_x_max_raw = number_observable(viewModel.range_x_max, null, null, null, 10)
-viewModel.range_y_min_raw = number_observable(viewModel.range_y_min, null, null, null, -10)
-viewModel.range_y_max_raw = number_observable(viewModel.range_y_max, null, null, null, 10)
+viewModel.step_size_raw = number_observable(viewModel.step_size, 0.0001, null, 0.1)
+viewModel.range_x_min_raw = number_observable(viewModel.range_x_min, null, null, -10)
+viewModel.range_x_max_raw = number_observable(viewModel.range_x_max, null, null, 10)
+viewModel.range_y_min_raw = number_observable(viewModel.range_y_min, null, null, -10)
+viewModel.range_y_max_raw = number_observable(viewModel.range_y_max, null, null, 10)
 
-viewModel.grid_distance_x_raw = number_observable(viewModel.grid_distance_x, 0.01, null, 0, 1)
-viewModel.grid_distance_y_raw = number_observable(viewModel.grid_distance_y, 0.01, null, 0, 1)
-
-read_ko_num = (obj, min, max, default_value, not_eq) ->
-  v = parseFloat(obj())
-  if isNaN(v) #or (not_eq and v == not_eq)
-    v = default_value
-  if min then v = Math.max(min, v)
-  if max then v = Math.min(v, max)
-  obj(String(v))
-  return v
+viewModel.grid_distance_x_raw = number_observable(viewModel.grid_distance_x, 0.01, null, 1)
+viewModel.grid_distance_y_raw = number_observable(viewModel.grid_distance_y, 0.01, null, 1)
 
 ko.applyBindings(viewModel)
 
@@ -206,17 +199,30 @@ redraw = ->
 r = paper.rect(0, 0, paper.width, paper.height)
 r.attr("fill", "#fff")
 
-redraw()
-
 # ---------------------------------------
-# svg buttons
+# svg
+
+options_string = "M26.834,14.693c1.816-2.088,2.181-4.938,1.193-7.334l-3.646,4.252l-3.594-0.699L19.596,7.45l3.637-4.242c-2.502-0.63-5.258,0.13-7.066,2.21c-1.907,2.193-2.219,5.229-1.039,7.693L5.624,24.04c-1.011,1.162-0.888,2.924,0.274,3.935c1.162,1.01,2.924,0.888,3.935-0.274l9.493-10.918C21.939,17.625,24.918,16.896,26.834,14.693z"
 
 init_button = (path, id) ->
   path.attr({"fill": "#333", "stroke-opacity": "0"})
   $(id).hover (-> path.attr("fill": "#000")), (-> path.attr("fill", "#333"))
-  
-  
-options_string = "M26.834,14.693c1.816-2.088,2.181-4.938,1.193-7.334l-3.646,4.252l-3.594-0.699L19.596,7.45l3.637-4.242c-2.502-0.63-5.258,0.13-7.066,2.21c-1.907,2.193-2.219,5.229-1.039,7.693L5.624,24.04c-1.011,1.162-0.888,2.924,0.274,3.935c1.162,1.01,2.924,0.888,3.935-0.274l9.493-10.918C21.939,17.625,24.918,16.896,26.834,14.693z"
+
+# init function
+
+init_fn_object = (fn_object) ->
+  html_id = 'fn_options_button' + fn_object.id
+  fn_options_button = Raphael(html_id, 30, 30)
+  p = fn_options_button.path(options_string)
+  init_button(p, '#' + html_id)
+  p.scale(0.8)
+
+viewModel.add_function()
+redraw()
+
+# ---------------------------------------
+# buttons
+
 
 # redraw
 redraw_button = Raphael("redraw_button", 40, 40)
@@ -229,6 +235,12 @@ view_options = Raphael("view_options", 40, 40)
 v_o_p = view_options.path(options_string)
 init_button(v_o_p, '#view_options')
 $('#view_options').click -> $('#draw_options_content').slideToggle(200)
+
+# save button
+
+save_button = Raphael("save_button", 40, 40)
+s_b = save_button.path("M16,1.466C7.973,1.466,1.466,7.973,1.466,16c0,8.027,6.507,14.534,14.534,14.534c8.027,0,14.534-6.507,14.534-14.534C30.534,7.973,24.027,1.466,16,1.466zM16,28.792c-1.549,0-2.806-1.256-2.806-2.806s1.256-2.806,2.806-2.806c1.55,0,2.806,1.256,2.806,2.806S17.55,28.792,16,28.792zM16,21.087l-7.858-6.562h3.469V5.747h8.779v8.778h3.468L16,21.087z")
+init_button(s_b, '#save_button')
 
 # add function
 add_function = Raphael("add_function", 40, 40)

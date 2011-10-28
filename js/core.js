@@ -1,5 +1,5 @@
 (function() {
-  var a_p, add_function, animate, animations, axes_object, calculate_path, calculate_points, draw_axes, draw_border, draw_graph, draw_grid, example_functions, get_paper_x, get_paper_y, get_range_x, get_range_y, grid_object, init_button, number_observable, options_string, paper, r, r_p, rand_nth, random, read_ko_num, redraw, redraw_button, start_animation, v_o_p, viewModel, view_options;
+  var a_p, add_function, animate, animations, axes_object, calculate_path, calculate_points, draw_axes, draw_border, draw_graph, draw_grid, example_functions, get_paper_x, get_paper_y, get_range_x, get_range_y, grid_object, init_button, init_fn_object, number_observable, options_string, paper, r, r_p, rand_nth, random, redraw, redraw_button, s_b, save_button, start_animation, v_o_p, viewModel, view_options;
   example_functions = ["sin(x)", "x * tan(x)", "pow(x, x)", "sin(1/x)", "tan(x) * sin(x)", "cos(tan(x))", "x * tan(x) * sin(x)", "sin(x) * x", "cos(tan(x)) / sin(x)", "pow(abs(x), cos(x))", "pow(abs(x), sin(x))"];
   rand_nth = function(coll) {
     return coll[Math.floor(Math.random() * coll.length)];
@@ -10,7 +10,7 @@
   viewModel = {
     functions: ko.observableArray([]),
     add_function: function() {
-      var obj, prev_id;
+      var new_fn_object, obj, prev_id;
       prev_id = Math.max.apply(null, (function() {
         var _i, _len, _ref, _results;
         _ref = this.functions();
@@ -24,12 +24,15 @@
       if (this.functions().length === 0) {
         prev_id = 0;
       }
-      return this.functions.push({
+      new_fn_object = {
         source: rand_nth(example_functions),
         stroke: "#" + random(9) + random(9) + random(9),
         id: 1 + prev_id
-      });
+      };
+      this.functions.push(new_fn_object);
+      return init_fn_object(new_fn_object);
     },
+    fn_types: ["a", "b", "c"],
     range_x_min: ko.observable(-10),
     range_x_max: ko.observable(10),
     range_y_min: ko.observable(-10),
@@ -38,8 +41,7 @@
     grid_distance_y: ko.observable(1),
     step_size: ko.observable(0.01)
   };
-  viewModel.add_function();
-  number_observable = function(obj, min, max, not_eq, default_value) {
+  number_observable = function(obj, min, max, default_value) {
     return ko.dependentObservable({
       read: function() {
         return String(obj());
@@ -60,28 +62,13 @@
       }
     });
   };
-  viewModel.step_size_raw = number_observable(viewModel.step_size, 0.0001, null, 0, 0.1);
-  viewModel.range_x_min_raw = number_observable(viewModel.range_x_min, null, null, null, -10);
-  viewModel.range_x_max_raw = number_observable(viewModel.range_x_max, null, null, null, 10);
-  viewModel.range_y_min_raw = number_observable(viewModel.range_y_min, null, null, null, -10);
-  viewModel.range_y_max_raw = number_observable(viewModel.range_y_max, null, null, null, 10);
-  viewModel.grid_distance_x_raw = number_observable(viewModel.grid_distance_x, 0.01, null, 0, 1);
-  viewModel.grid_distance_y_raw = number_observable(viewModel.grid_distance_y, 0.01, null, 0, 1);
-  read_ko_num = function(obj, min, max, default_value, not_eq) {
-    var v;
-    v = parseFloat(obj());
-    if (isNaN(v)) {
-      v = default_value;
-    }
-    if (min) {
-      v = Math.max(min, v);
-    }
-    if (max) {
-      v = Math.min(v, max);
-    }
-    obj(String(v));
-    return v;
-  };
+  viewModel.step_size_raw = number_observable(viewModel.step_size, 0.0001, null, 0.1);
+  viewModel.range_x_min_raw = number_observable(viewModel.range_x_min, null, null, -10);
+  viewModel.range_x_max_raw = number_observable(viewModel.range_x_max, null, null, 10);
+  viewModel.range_y_min_raw = number_observable(viewModel.range_y_min, null, null, -10);
+  viewModel.range_y_max_raw = number_observable(viewModel.range_y_max, null, null, 10);
+  viewModel.grid_distance_x_raw = number_observable(viewModel.grid_distance_x, 0.01, null, 1);
+  viewModel.grid_distance_y_raw = number_observable(viewModel.grid_distance_y, 0.01, null, 1);
   ko.applyBindings(viewModel);
   get_range_x = function() {
     return [viewModel.range_x_min(), viewModel.range_x_max()];
@@ -265,7 +252,7 @@
   };
   r = paper.rect(0, 0, paper.width, paper.height);
   r.attr("fill", "#fff");
-  redraw();
+  options_string = "M26.834,14.693c1.816-2.088,2.181-4.938,1.193-7.334l-3.646,4.252l-3.594-0.699L19.596,7.45l3.637-4.242c-2.502-0.63-5.258,0.13-7.066,2.21c-1.907,2.193-2.219,5.229-1.039,7.693L5.624,24.04c-1.011,1.162-0.888,2.924,0.274,3.935c1.162,1.01,2.924,0.888,3.935-0.274l9.493-10.918C21.939,17.625,24.918,16.896,26.834,14.693z";
   init_button = function(path, id) {
     path.attr({
       "fill": "#333",
@@ -279,7 +266,16 @@
       return path.attr("fill", "#333");
     }));
   };
-  options_string = "M26.834,14.693c1.816-2.088,2.181-4.938,1.193-7.334l-3.646,4.252l-3.594-0.699L19.596,7.45l3.637-4.242c-2.502-0.63-5.258,0.13-7.066,2.21c-1.907,2.193-2.219,5.229-1.039,7.693L5.624,24.04c-1.011,1.162-0.888,2.924,0.274,3.935c1.162,1.01,2.924,0.888,3.935-0.274l9.493-10.918C21.939,17.625,24.918,16.896,26.834,14.693z";
+  init_fn_object = function(fn_object) {
+    var fn_options_button, html_id, p;
+    html_id = 'fn_options_button' + fn_object.id;
+    fn_options_button = Raphael(html_id, 30, 30);
+    p = fn_options_button.path(options_string);
+    init_button(p, '#' + html_id);
+    return p.scale(0.8);
+  };
+  viewModel.add_function();
+  redraw();
   redraw_button = Raphael("redraw_button", 40, 40);
   r_p = redraw_button.path("M15.999,4.308c1.229,0.001,2.403,0.214,3.515,0.57L18.634,6.4h6.247l-1.562-2.706L21.758,0.99l-0.822,1.425c-1.54-0.563-3.2-0.878-4.936-0.878c-7.991,0-14.468,6.477-14.468,14.468c0,3.317,1.128,6.364,3.005,8.805l2.2-1.689c-1.518-1.973-2.431-4.435-2.436-7.115C4.312,9.545,9.539,4.318,15.999,4.308zM27.463,7.203l-2.2,1.69c1.518,1.972,2.431,4.433,2.435,7.114c-0.011,6.46-5.238,11.687-11.698,11.698c-1.145-0.002-2.24-0.188-3.284-0.499l0.828-1.432H7.297l1.561,2.704l1.562,2.707l0.871-1.511c1.477,0.514,3.058,0.801,4.709,0.802c7.992-0.002,14.468-6.479,14.47-14.47C30.468,12.689,29.339,9.643,27.463,7.203z");
   init_button(r_p, '#redraw_button');
@@ -292,6 +288,9 @@
   $('#view_options').click(function() {
     return $('#draw_options_content').slideToggle(200);
   });
+  save_button = Raphael("save_button", 40, 40);
+  s_b = save_button.path("M16,1.466C7.973,1.466,1.466,7.973,1.466,16c0,8.027,6.507,14.534,14.534,14.534c8.027,0,14.534-6.507,14.534-14.534C30.534,7.973,24.027,1.466,16,1.466zM16,28.792c-1.549,0-2.806-1.256-2.806-2.806s1.256-2.806,2.806-2.806c1.55,0,2.806,1.256,2.806,2.806S17.55,28.792,16,28.792zM16,21.087l-7.858-6.562h3.469V5.747h8.779v8.778h3.468L16,21.087z");
+  init_button(s_b, '#save_button');
   add_function = Raphael("add_function", 40, 40);
   a_p = add_function.path("M25.979,12.896 19.312,12.896 19.312,6.229 12.647,6.229 12.647,12.896 5.979,12.896 5.979,19.562 12.647,19.562 12.647,26.229 19.312,26.229 19.312,19.562 25.979,19.562z");
   init_button(a_p, '#add_function');

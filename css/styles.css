@@ -157,8 +157,8 @@ button:hover {
 	text-align: center;
 }
 
-#draw_options_content {
-	display: none;	
+.options_box {
+	display: none;
 	background: #AAA;
 	padding: 30px;
 	padding-top: 20px;
@@ -180,6 +180,10 @@ button:hover {
 .content_area {
 	line-height: 1.5em;
 	margin-top: 6em;
+}
+
+#function_list td {
+	padding-left: 20px;
 }
 
 
