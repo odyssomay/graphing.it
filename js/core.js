@@ -33,7 +33,7 @@
         para_step_size: 0.01,
         type: ko.observable("Standard"),
         source: rand_nth(example_functions),
-        source_polar: "sin(x)",
+        source_polar: "x * sin(x)",
         source_para_x: "sin(t)",
         source_para_y: "cos(t)",
         stroke: "#" + random(9) + random(9) + random(9),
