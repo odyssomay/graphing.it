@@ -1,5 +1,5 @@
 (function() {
-  var a_p, add_function, animate, animations, axes_object, calculate_path, calculate_points, draw_axes, draw_border, draw_graph, draw_grid, example_functions, get_paper_x, get_paper_y, get_range_x, get_range_y, grid_object, init_button, init_fn_object, number_observable, options_string, paper, r, r_p, rand_nth, random, redraw, redraw_button, s_b, save_button, start_animation, v_o_p, viewModel, view_options;
+  var a_p, add_function, animate, animations, axes_object, calculate_parametric_points, calculate_points, calculate_polar_points, calculate_standard_points, construct_path, draw_axes, draw_border, draw_grid, draw_path, example_functions, get_paper_x, get_paper_y, get_range_x, get_range_y, grid_object, init_button, init_fn_object, number_observable, options_string, paper, r, r_p, rand_nth, random, redraw, redraw_button, s_b, save_button, start_animation, transform_points, v_o_p, viewModel, view_options;
   example_functions = ["sin(x)", "x * tan(x)", "pow(x, x)", "sin(1/x)", "tan(x) * sin(x)", "cos(tan(x))", "x * tan(x) * sin(x)", "sin(x) * x", "cos(tan(x)) / sin(x)", "pow(abs(x), cos(x))", "pow(abs(x), sin(x))"];
   rand_nth = function(coll) {
     return coll[Math.floor(Math.random() * coll.length)];
@@ -25,14 +25,23 @@
         prev_id = 0;
       }
       new_fn_object = {
+        polar_range_min: 0,
+        polar_range_max: 10,
+        polar_step_size: 0.01,
+        para_range_min: 0,
+        para_range_max: 10,
+        para_step_size: 0.01,
+        type: ko.observable("Standard"),
         source: rand_nth(example_functions),
+        source_polar: "sin(x)",
+        source_para_x: "sin(t)",
+        source_para_y: "cos(t)",
         stroke: "#" + random(9) + random(9) + random(9),
         id: 1 + prev_id
       };
       this.functions.push(new_fn_object);
       return init_fn_object(new_fn_object);
     },
-    fn_types: ["a", "b", "c"],
     range_x_min: ko.observable(-10),
     range_x_max: ko.observable(10),
     range_y_min: ko.observable(-10),
@@ -196,15 +205,56 @@
     r.attr("stroke", "#555");
     return r.attr("stroke-width", "10");
   };
-  calculate_points = function(f) {
+  calculate_standard_points = function(f) {
     var x, _ref, _ref2, _ref3, _results;
     _results = [];
     for (x = _ref = get_range_x()[0], _ref2 = get_range_x()[1], _ref3 = viewModel.step_size(); _ref <= _ref2 ? x <= _ref2 : x >= _ref2; x += _ref3) {
-      _results.push([get_paper_x(x), get_paper_y(f(x))]);
+      _results.push([x, f(x)]);
     }
     return _results;
   };
-  calculate_path = function(points, last_point) {
+  calculate_polar_points = function(fn_object, f) {
+    var r, x, _ref, _ref2, _ref3, _results;
+    _results = [];
+    for (x = _ref = fn_object.polar_range_min, _ref2 = fn_object.polar_range_max, _ref3 = fn_object.polar_step_size; _ref <= _ref2 ? x <= _ref2 : x >= _ref2; x += _ref3) {
+      r = f(x);
+      _results.push([r * Math.cos(x), r * Math.sin(x)]);
+    }
+    return _results;
+  };
+  calculate_parametric_points = function(fn_object, f_x, f_y) {
+    var t, _ref, _ref2, _ref3, _results;
+    _results = [];
+    for (t = _ref = fn_object.para_range_min, _ref2 = fn_object.para_range_max, _ref3 = fn_object.para_step_size; _ref <= _ref2 ? t <= _ref2 : t >= _ref2; t += _ref3) {
+      _results.push([f_x(t), f_y(t)]);
+    }
+    return _results;
+  };
+  calculate_points = function(fn_object) {
+    var f, f_x, f_y;
+    switch (fn_object.type()) {
+      case 'Standard':
+        f = new Function('x', "return " + fn_object.source);
+        return calculate_standard_points(f);
+      case 'Polar':
+        f = new Function('x', "return " + fn_object.source_polar);
+        return calculate_polar_points(fn_object, f);
+      case 'Parametric':
+        f_x = new Function('t', "return " + fn_object.source_para_x);
+        f_y = new Function('t', "return " + fn_object.source_para_y);
+        return calculate_parametric_points(fn_object, f_x, f_y);
+    }
+  };
+  transform_points = function(points) {
+    var x, y, _i, _len, _ref, _results;
+    _results = [];
+    for (_i = 0, _len = points.length; _i < _len; _i++) {
+      _ref = points[_i], x = _ref[0], y = _ref[1];
+      _results.push([get_paper_x(x), get_paper_y(y)]);
+    }
+    return _results;
+  };
+  construct_path = function(points, last_point) {
     var move_or_line, x, y;
     if (points.length > 0) {
       x = points[0][0];
@@ -214,29 +264,21 @@
       } else {
         move_or_line = "L";
       }
-      return move_or_line + x + " " + y + calculate_path(points.slice(1), [x, y]);
+      return move_or_line + x + "," + y + construct_path(points.slice(1), [x, y]);
     } else {
       return "";
     }
   };
-  draw_graph = function(fn_object) {
-    var animation, element, f, path_string;
-    f = new Function('x', "return " + fn_object.source);
-    path_string = "M" + paper.width / 2 + " " + paper.height / 2 + "M" + calculate_path(calculate_points(f)).substr(1);
-    if (fn_object.element) {
-      animation = Raphael.animation({
-        path: path_string,
-        stroke: fn_object.stroke
-      }, 300, "<>");
-      return animate(fn_object.element, animation);
-    } else {
-      element = paper.path(path_string);
-      element.attr("stroke", fn_object.stroke);
-      element.attr("stroke-linecap", "butt");
-      element.attr("stroke-linejoin", "miter");
-      element.attr("stroke-width", "2");
-      return fn_object.element = element;
-    }
+  draw_path = function(fn_object) {
+    var animation, path_string, points, t_points;
+    points = calculate_points(fn_object);
+    t_points = transform_points(points);
+    path_string = 'M' + construct_path(t_points).substr(1);
+    animation = Raphael.animation({
+      path: path_string,
+      stroke: fn_object.stroke
+    }, 300, "<>");
+    return animate(fn_object.element, animation);
   };
   redraw = function() {
     var fn_object, _i, _len, _ref;
@@ -245,13 +287,15 @@
     _ref = viewModel.functions();
     for (_i = 0, _len = _ref.length; _i < _len; _i++) {
       fn_object = _ref[_i];
-      draw_graph(fn_object);
+      draw_path(fn_object);
     }
     draw_border();
     return start_animation();
   };
   r = paper.rect(0, 0, paper.width, paper.height);
   r.attr("fill", "#fff");
+  draw_grid();
+  draw_axes();
   options_string = "M26.834,14.693c1.816-2.088,2.181-4.938,1.193-7.334l-3.646,4.252l-3.594-0.699L19.596,7.45l3.637-4.242c-2.502-0.63-5.258,0.13-7.066,2.21c-1.907,2.193-2.219,5.229-1.039,7.693L5.624,24.04c-1.011,1.162-0.888,2.924,0.274,3.935c1.162,1.01,2.924,0.888,3.935-0.274l9.493-10.918C21.939,17.625,24.918,16.896,26.834,14.693z";
   init_button = function(path, id) {
     path.attr({
@@ -267,15 +311,34 @@
     }));
   };
   init_fn_object = function(fn_object) {
-    var fn_options_button, html_id, p;
+    var cw, element, fn_options_button, html_id, p;
     html_id = 'fn_options_button' + fn_object.id;
     fn_options_button = Raphael(html_id, 30, 30);
     p = fn_options_button.path(options_string);
     init_button(p, '#' + html_id);
     p.scale(0.8);
-    return $('#' + html_id).click(function() {
+    $('#' + html_id).click(function() {
       return $('#' + 'fn_options_content' + fn_object.id).slideToggle(200);
     });
+    cw = Raphael.colorwheel($('#' + 'fn_stroke_color' + fn_object.id), 90, 80);
+    cw.color(fn_object.stroke);
+    cw.onchange(function(color) {
+      var s;
+      s = Raphael.rgb(color.r, color.g, color.b);
+      fn_object.stroke = s;
+      if (fn_object.element) {
+        return fn_object.element.attr("stroke", s);
+      }
+    });
+    element = paper.path("");
+    element.attr({
+      "stroke": fn_object.stroke,
+      "stroke-linecap": "butt",
+      "stroke-linejoin": "miter",
+      "stroke-width": "2",
+      "stroke-dasharray": "none"
+    });
+    return fn_object.element = element;
   };
   viewModel.add_function();
   redraw();

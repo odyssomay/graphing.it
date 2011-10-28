@@ -112,10 +112,46 @@
 					<div id="fn_options_button${ id }"></div>
 				</div>
 				<div class="sixcol">
-					<textarea data-bind="value: source"></textarea>
+					<div data-bind="visible: type() === 'Standard'" style="position: relative">
+						<div class="label_overlay">y</div>
+						<textarea data-bind="value: source"></textarea>
+					</div>
+					<div data-bind="visible: type() === 'Polar'" style="position: relative">
+						<div class="label_overlay">r</div>
+						<textarea data-bind="value: source_polar"></textarea>
+					</div>
+					<div data-bind="visible: type() === 'Parametric'">
+						<table style="width: 100%">
+							<tr>
+								<td>
+									<div style="position: relative">
+										<div class="label_overlay">x</div>
+										<textarea data-bind="value: source_para_x"></textarea>
+									</div>
+								</td>
+								<td style="padding-right: 0;">
+									<div style="position: relative">
+										<div class="label_overlay">y</div>
+										<textarea data-bind="value: source_para_y"></textarea>
+									</div>
+								</td>
+							</table>
+						</div>
 					<div id="fn_options_content${ id }" class="fn_options options_box">
-						Type
-						<select data-bind="options: ['Standard', 'Polar', 'Parametric']"></select>
+						<table style="width: 100%;">
+							<tr>
+								<td>Type</td>
+								<td>Color</td>
+							</tr>
+							<tr>
+								<td>
+									<select data-bind="options: ['Standard', 'Polar', 'Parametric'], value: type"></select>
+								</td>
+								<td>
+									<div id="fn_stroke_color${ id }"></div>
+								</td>
+							</tr>
+						</table>
 					</div>
 				</div>
 				<div class="threecol last">
@@ -127,6 +163,7 @@
 		<script type="text/javascript" src="js/jquery-1.6.4.min.js"></script>
 		<script type='text/javascript' src='js/jquery.tmpl.js'></script>
 		<script type="text/javascript" src="js/raphael-min.js"></script>
+		<script type="text/javascript" src="js/colorwheel.js"></script>
 		<script type="text/javascript" src="js/knockout-1.2.1.js"></script>
 		<script type="text/javascript" src="js/math.js"></script>
 		<script type="text/javascript" src="js/core.js"></script>

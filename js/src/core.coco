@@ -19,14 +19,24 @@ viewModel = {
     prev_id = Math.max.apply(null, obj.id for obj in this.functions())
     if this.functions().length == 0 then prev_id = 0
     new_fn_object = {
+      polar_range_min: 0
+      polar_range_max: 10
+      polar_step_size: 0.01
+      
+      para_range_min: 0
+      para_range_max: 10
+      para_step_size: 0.01
+      
+      type: ko.observable("Standard")
       source: rand_nth(example_functions)
+      source_polar: "sin(x)"
+      source_para_x: "sin(t)"
+      source_para_y: "cos(t)"
       stroke: "#" + random(9) + random(9) + random(9)
       id: 1 + prev_id
       }
     this.functions.push(new_fn_object)
     init_fn_object(new_fn_object)
-  
-  fn_types: ["a", "b", "c"]
   
   range_x_min: ko.observable(-10)
   range_x_max: ko.observable(10)
@@ -158,11 +168,44 @@ draw_border = ->
   r.attr("stroke", "#555")
   r.attr("stroke-width", "10")
 
-calculate_points = (f) ->
-  for x in [get_range_x()[0]..get_range_x()[1]] by viewModel.step_size()
-    [get_paper_x(x), get_paper_y(f(x))]
+# ---------------------------------------
+# calculate points 
 
-calculate_path = (points, last_point) ->
+calculate_standard_points = (f) ->
+  for x in [get_range_x()[0]..get_range_x()[1]] by viewModel.step_size()
+    [x, f(x)]
+
+calculate_polar_points = (fn_object, f) ->
+  for x in [fn_object.polar_range_min..fn_object.polar_range_max] by fn_object.polar_step_size
+    r = f(x)
+    [r * Math.cos(x), 
+     r * Math.sin(x)]
+
+calculate_parametric_points = (fn_object, f_x, f_y) ->
+  for t in [fn_object.para_range_min..fn_object.para_range_max] by fn_object.para_step_size
+    [f_x(t), f_y(t)]
+
+calculate_points = (fn_object) ->
+  switch fn_object.type()
+    when 'Standard'
+      f = new Function('x', "return " + fn_object.source)
+      calculate_standard_points(f)
+    when 'Polar'
+      f = new Function('x', "return " + fn_object.source_polar)
+      calculate_polar_points(fn_object, f)
+    when 'Parametric'
+      f_x = new Function('t', "return " + fn_object.source_para_x)
+      f_y = new Function('t', "return " + fn_object.source_para_y)
+      calculate_parametric_points(fn_object, f_x, f_y)
+
+transform_points = (points) ->
+  for [x, y] in points
+    [get_paper_x(x), get_paper_y(y)]
+
+# ---------------------------------------
+# Create path from points
+
+construct_path = (points, last_point) ->
   if points.length > 0
     x = points[0][0]
     y = points[0][1]
@@ -170,34 +213,29 @@ calculate_path = (points, last_point) ->
       move_or_line = "M" 
     else 
       move_or_line = "L"
-    move_or_line + x + " " + y + calculate_path(points[1..-1], [x, y])
+    move_or_line + x + "," + y + construct_path(points[1..-1], [x, y])
   else
     ""
 
-draw_graph = (fn_object) ->
-  f = new Function('x', "return " + fn_object.source)
-  path_string = "M" + paper.width / 2 + " " + paper.height / 2 + "M" + calculate_path(calculate_points(f)).substr(1)
-  if fn_object.element
-    animation = Raphael.animation({path: path_string, stroke: fn_object.stroke}, 300, "<>")
-    animate(fn_object.element, animation)
-  else
-    element = paper.path(path_string)
-    element.attr("stroke", fn_object.stroke)
-    element.attr("stroke-linecap", "butt")
-    element.attr("stroke-linejoin", "miter")
-    element.attr("stroke-width", "2")
-    fn_object.element = element
+draw_path = (fn_object) ->
+  points = calculate_points(fn_object)
+  t_points = transform_points(points)
+  path_string = 'M' + construct_path(t_points).substr(1)
+  animation = Raphael.animation({path: path_string, stroke: fn_object.stroke}, 300, "<>")
+  animate(fn_object.element, animation)
 
 redraw = ->
   draw_grid()
   draw_axes()
   for fn_object in viewModel.functions()
-    draw_graph(fn_object)
+    draw_path(fn_object)
   draw_border()
   start_animation()
 
 r = paper.rect(0, 0, paper.width, paper.height)
 r.attr("fill", "#fff")
+draw_grid()
+draw_axes()
 
 # ---------------------------------------
 # svg
@@ -208,15 +246,39 @@ init_button = (path, id) ->
   path.attr({"fill": "#333", "stroke-opacity": "0"})
   $(id).hover (-> path.attr("fill": "#000")), (-> path.attr("fill", "#333"))
 
+# ---------------------------------------
 # init function
 
 init_fn_object = (fn_object) ->
+  # button 
   html_id = 'fn_options_button' + fn_object.id
   fn_options_button = Raphael(html_id, 30, 30)
   p = fn_options_button.path(options_string)
   init_button(p, '#' + html_id)
   p.scale(0.8)
+  # slide options visible
   $('#' + html_id).click -> $('#' + 'fn_options_content' + fn_object.id).slideToggle(200)
+  # color picker
+  cw = Raphael.colorwheel($('#' + 'fn_stroke_color' + fn_object.id), 90, 80)
+  #cw = Raphael.colorwheel(40, 20, 300, "#eee")
+  cw.color(fn_object.stroke)
+  cw.onchange (color) -> 
+    s = Raphael.rgb(color.r, color.g, color.b)
+    fn_object.stroke = s
+    if fn_object.element
+      fn_object.element.attr("stroke", s)
+  # element
+  element = paper.path("")
+  element.attr {
+    "stroke": fn_object.stroke
+    "stroke-linecap": "butt"
+    "stroke-linejoin": "miter"
+    "stroke-width": "2"
+    "stroke-dasharray": "none"
+    }
+  fn_object.element = element
+
+# add example function after 'init_fn_object' exists
 
 viewModel.add_function()
 redraw()
