@@ -9,7 +9,7 @@ polar_example_functions = ["pow(x, 1.5) * sin(x) * cos(x)", "x * sin(x)"]
 rand_nth = (coll) ->
   coll[Math.floor(Math.random() * coll.length)]
 
-new_fn_object = (prev_id) ->
+new_fn_object = (prev_id) -> {
   polar_range_min: 0
   polar_range_max: 10
   polar_step_size: 0.01
@@ -25,6 +25,7 @@ new_fn_object = (prev_id) ->
   source_para_y: "cos(t)"
   stroke: "#" + random(9) + random(9) + random(9)
   id: 1 + prev_id
+  }
 
 # ---------------------------------------
 # knockout 
@@ -55,10 +56,11 @@ ko.bindingHandlers.number_value = {
   init: (element, valueAccessor, allBindingsAccessor, viewModel) ->
     $(element).focusout ->
       ab = allBindingsAccessor()
-      v = parseFloat($(element).val())
-      if isNaN(v) #or (not_eq and v == not_eq)
+      raw_value = $(element).val()
+      if isNaN(raw_value) #or (not_eq and v == not_eq)
         $(element).val(String(valueAccessor()()))
       else
+        v = parseFloat(raw_value)
         if ab.min? then v = Math.max(ab.min, v)
         if ab.max? then v = Math.min(v, ab.max)
         valueAccessor()(v)
@@ -119,7 +121,7 @@ draw_axes = ->
   p_y = "M" + get_paper_x(0) + ",0L" + get_paper_x(0) + "," + get_paper_y(get_range_y()[0])
   p = p_x + p_y
   if axes_object
-    animate(axes_object, Raphael.animation({path: p}, 300, "<>"))
+    axes_object.animate(Raphael.animation({path: p}, 300, "<>"))
   else
     axes_object = paper.path(p)
     axes_object.attr("stroke-width", "2")
@@ -154,7 +156,7 @@ draw_grid = ->
 
   p = x_path_neg.join("") + x_path_pos.join("") + y_path_neg.join("") + y_path_pos.join("")
   if grid_object
-    animate(grid_object, Raphael.animation({path: p}, 300, "<>"))
+    grid_object.animate(Raphael.animation({path: p}, 300, "<>"))
   else
     grid_object = paper.path(p)
     grid_object.attr({"stroke-width": "2", "stroke": "#EEE"})
@@ -164,6 +166,18 @@ draw_border = ->
   r.attr("fill-opacity", "0")
   r.attr("stroke", "#555")
   r.attr("stroke-width", "10")
+
+for e in $('.axes_updating_elem')
+  # doesn't work for some reason
+  #$(e).bind 'keydown', (e) ->
+  #  if e.which == 13 then redraw()
+  #
+  $(e).focusout ->
+    redraw()
+
+for e in $('.grid_updating_elem')
+  $(e).focusout ->
+    draw_grid()
 
 # ---------------------------------------
 # calculate points 

@@ -1,5 +1,5 @@
 (function() {
-  var a_p, add_function, animate, animations, axes_object, calculate_parametric_points, calculate_points, calculate_polar_points, calculate_standard_points, construct_path, draw_axes, draw_border, draw_grid, draw_path, get_paper_x, get_paper_y, get_range_x, get_range_y, grid_object, init_button, init_fn_object, new_fn_object, options_string, paper, polar_example_functions, r, r_p, rand_nth, random, redraw, redraw_button, s_b, save_button, standard_example_functions, start_animation, transform_points, v_o_p, viewModel, view_options;
+  var a_p, add_function, animate, animations, axes_object, calculate_parametric_points, calculate_points, calculate_polar_points, calculate_standard_points, construct_path, draw_axes, draw_border, draw_grid, draw_path, e, get_paper_x, get_paper_y, get_range_x, get_range_y, grid_object, init_button, init_fn_object, new_fn_object, options_string, paper, polar_example_functions, r, r_p, rand_nth, random, redraw, redraw_button, s_b, save_button, standard_example_functions, start_animation, transform_points, v_o_p, viewModel, view_options, _i, _j, _len, _len2, _ref, _ref2;
   standard_example_functions = ["sin(x)", "x * tan(x)", "pow(x, x)", "sin(1/x)", "tan(x) * sin(x)", "cos(tan(x))", "x * tan(x) * sin(x)", "sin(x) * x", "cos(tan(x)) / sin(x)", "pow(abs(x), cos(x))", "pow(abs(x), sin(x))"];
   polar_example_functions = ["pow(x, 1.5) * sin(x) * cos(x)", "x * sin(x)"];
   rand_nth = function(coll) {
@@ -57,12 +57,13 @@
   ko.bindingHandlers.number_value = {
     init: function(element, valueAccessor, allBindingsAccessor, viewModel) {
       return $(element).focusout(function() {
-        var ab, v;
+        var ab, raw_value, v;
         ab = allBindingsAccessor();
-        v = parseFloat($(element).val());
-        if (isNaN(v)) {
+        raw_value = $(element).val();
+        if (isNaN(raw_value)) {
           return $(element).val(String(valueAccessor()()));
         } else {
+          v = parseFloat(raw_value);
           if (ab.min != null) {
             v = Math.max(ab.min, v);
           }
@@ -123,7 +124,7 @@
     p_y = "M" + get_paper_x(0) + ",0L" + get_paper_x(0) + "," + get_paper_y(get_range_y()[0]);
     p = p_x + p_y;
     if (axes_object) {
-      return animate(axes_object, Raphael.animation({
+      return axes_object.animate(Raphael.animation({
         path: p
       }, 300, "<>"));
     } else {
@@ -186,7 +187,7 @@
     }
     p = x_path_neg.join("") + x_path_pos.join("") + y_path_neg.join("") + y_path_pos.join("");
     if (grid_object) {
-      return animate(grid_object, Raphael.animation({
+      return grid_object.animate(Raphael.animation({
         path: p
       }, 300, "<>"));
     } else {
@@ -204,27 +205,41 @@
     r.attr("stroke", "#555");
     return r.attr("stroke-width", "10");
   };
+  _ref = $('.axes_updating_elem');
+  for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+    e = _ref[_i];
+    $(e).focusout(function() {
+      return redraw();
+    });
+  }
+  _ref2 = $('.grid_updating_elem');
+  for (_j = 0, _len2 = _ref2.length; _j < _len2; _j++) {
+    e = _ref2[_j];
+    $(e).focusout(function() {
+      return draw_grid();
+    });
+  }
   calculate_standard_points = function(f) {
-    var x, _ref, _ref2, _ref3, _results;
+    var x, _ref3, _ref4, _ref5, _results;
     _results = [];
-    for (x = _ref = get_range_x()[0], _ref2 = get_range_x()[1], _ref3 = viewModel.step_size(); _ref <= _ref2 ? x <= _ref2 : x >= _ref2; x += _ref3) {
+    for (x = _ref3 = get_range_x()[0], _ref4 = get_range_x()[1], _ref5 = viewModel.step_size(); _ref3 <= _ref4 ? x <= _ref4 : x >= _ref4; x += _ref5) {
       _results.push([x, f(x)]);
     }
     return _results;
   };
   calculate_polar_points = function(fn_object, f) {
-    var r, x, _ref, _ref2, _ref3, _results;
+    var r, x, _ref3, _ref4, _ref5, _results;
     _results = [];
-    for (x = _ref = fn_object.polar_range_min, _ref2 = fn_object.polar_range_max, _ref3 = fn_object.polar_step_size; _ref <= _ref2 ? x <= _ref2 : x >= _ref2; x += _ref3) {
+    for (x = _ref3 = fn_object.polar_range_min, _ref4 = fn_object.polar_range_max, _ref5 = fn_object.polar_step_size; _ref3 <= _ref4 ? x <= _ref4 : x >= _ref4; x += _ref5) {
       r = f(x);
       _results.push([r * Math.cos(x), r * Math.sin(x)]);
     }
     return _results;
   };
   calculate_parametric_points = function(fn_object, f_x, f_y) {
-    var t, _ref, _ref2, _ref3, _results;
+    var t, _ref3, _ref4, _ref5, _results;
     _results = [];
-    for (t = _ref = fn_object.para_range_min, _ref2 = fn_object.para_range_max, _ref3 = fn_object.para_step_size; _ref <= _ref2 ? t <= _ref2 : t >= _ref2; t += _ref3) {
+    for (t = _ref3 = fn_object.para_range_min, _ref4 = fn_object.para_range_max, _ref5 = fn_object.para_step_size; _ref3 <= _ref4 ? t <= _ref4 : t >= _ref4; t += _ref5) {
       _results.push([f_x(t), f_y(t)]);
     }
     return _results;
@@ -245,10 +260,10 @@
     }
   };
   transform_points = function(points) {
-    var x, y, _i, _len, _ref, _results;
+    var x, y, _k, _len3, _ref3, _results;
     _results = [];
-    for (_i = 0, _len = points.length; _i < _len; _i++) {
-      _ref = points[_i], x = _ref[0], y = _ref[1];
+    for (_k = 0, _len3 = points.length; _k < _len3; _k++) {
+      _ref3 = points[_k], x = _ref3[0], y = _ref3[1];
       _results.push([get_paper_x(x), get_paper_y(y)]);
     }
     return _results;
@@ -280,12 +295,12 @@
     return animate(fn_object.element, animation);
   };
   redraw = function() {
-    var fn_object, _i, _len, _ref;
+    var fn_object, _k, _len3, _ref3;
     draw_grid();
     draw_axes();
-    _ref = viewModel.functions();
-    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-      fn_object = _ref[_i];
+    _ref3 = viewModel.functions();
+    for (_k = 0, _len3 = _ref3.length; _k < _len3; _k++) {
+      fn_object = _ref3[_k];
       draw_path(fn_object);
     }
     draw_border();
