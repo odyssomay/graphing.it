@@ -216,6 +216,7 @@ init_fn_object = (fn_object) ->
   p = fn_options_button.path(options_string)
   init_button(p, '#' + html_id)
   p.scale(0.8)
+  $('#' + html_id).click -> $('#' + 'fn_options_content' + fn_object.id).slideToggle(200)
 
 viewModel.add_function()
 redraw()

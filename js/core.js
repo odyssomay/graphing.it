@@ -272,7 +272,10 @@
     fn_options_button = Raphael(html_id, 30, 30);
     p = fn_options_button.path(options_string);
     init_button(p, '#' + html_id);
-    return p.scale(0.8);
+    p.scale(0.8);
+    return $('#' + html_id).click(function() {
+      return $('#' + 'fn_options_content' + fn_object.id).slideToggle(200);
+    });
   };
   viewModel.add_function();
   redraw();
