@@ -1,11 +1,30 @@
 
-example_functions = ["sin(x)", "x * tan(x)", "pow(x, x)", 
+standard_example_functions = ["sin(x)", "x * tan(x)", "pow(x, x)", 
   "sin(1/x)", "tan(x) * sin(x)", "cos(tan(x))",
   "x * tan(x) * sin(x)", "sin(x) * x", "cos(tan(x)) / sin(x)",
   "pow(abs(x), cos(x))", "pow(abs(x), sin(x))"]
 
+polar_example_functions = ["pow(x, 1.5) * sin(x) * cos(x)", "x * sin(x)"]
+
 rand_nth = (coll) ->
   coll[Math.floor(Math.random() * coll.length)]
+
+new_fn_object = (prev_id) ->
+  polar_range_min: 0
+  polar_range_max: 10
+  polar_step_size: 0.01
+  
+  para_range_min: 0
+  para_range_max: 10
+  para_step_size: 0.01
+  
+  type: ko.observable("Standard")
+  source: rand_nth(standard_example_functions)
+  source_polar: rand_nth(polar_example_functions)
+  source_para_x: "sin(t)"
+  source_para_y: "cos(t)"
+  stroke: "#" + random(9) + random(9) + random(9)
+  id: 1 + prev_id
 
 # ---------------------------------------
 # knockout 
@@ -18,57 +37,35 @@ viewModel = {
   add_function: -> 
     prev_id = Math.max.apply(null, obj.id for obj in this.functions())
     if this.functions().length == 0 then prev_id = 0
-    new_fn_object = {
-      polar_range_min: 0
-      polar_range_max: 10
-      polar_step_size: 0.01
-      
-      para_range_min: 0
-      para_range_max: 10
-      para_step_size: 0.01
-      
-      type: ko.observable("Standard")
-      source: rand_nth(example_functions)
-      source_polar: "x * sin(x)"
-      source_para_x: "sin(t)"
-      source_para_y: "cos(t)"
-      stroke: "#" + random(9) + random(9) + random(9)
-      id: 1 + prev_id
-      }
-    this.functions.push(new_fn_object)
-    init_fn_object(new_fn_object)
-  
+    f = new_fn_object(prev_id)
+    this.functions.push(f)
+    init_fn_object(f)
+
   range_x_min: ko.observable(-10)
   range_x_max: ko.observable(10)
   range_y_min: ko.observable(-10)
   range_y_max: ko.observable(10)
-  
+
   grid_distance_x: ko.observable(1)
   grid_distance_y: ko.observable(1)
   step_size: ko.observable(0.01)
 }
 
-number_observable = (obj, min, max, default_value) ->
-  ko.dependentObservable {
-    read: ->
-      String(obj())
-    write: (value) ->
-      v = parseFloat(value)
+ko.bindingHandlers.number_value = {
+  init: (element, valueAccessor, allBindingsAccessor, viewModel) ->
+    $(element).focusout ->
+      ab = allBindingsAccessor()
+      v = parseFloat($(element).val())
       if isNaN(v) #or (not_eq and v == not_eq)
-        v = default_value #obj()
-      if not min == null then v = Math.max(min, v)
-      if not max == null then v = Math.min(v, max)
-      obj(v)
-  }
+        $(element).val(String(valueAccessor()()))
+      else
+        if ab.min? then v = Math.max(ab.min, v)
+        if ab.max? then v = Math.min(v, ab.max)
+        valueAccessor()(v)
 
-viewModel.step_size_raw = number_observable(viewModel.step_size, 0.0001, null, 0.1)
-viewModel.range_x_min_raw = number_observable(viewModel.range_x_min, null, null, -10)
-viewModel.range_x_max_raw = number_observable(viewModel.range_x_max, null, null, 10)
-viewModel.range_y_min_raw = number_observable(viewModel.range_y_min, null, null, -10)
-viewModel.range_y_max_raw = number_observable(viewModel.range_y_max, null, null, 10)
-
-viewModel.grid_distance_x_raw = number_observable(viewModel.grid_distance_x, 0.01, null, 1)
-viewModel.grid_distance_y_raw = number_observable(viewModel.grid_distance_y, 0.01, null, 1)
+  update: (element, valueAccessor, allBindingsAccessor, viewModel) ->
+    $(element).val(String(valueAccessor()()))
+}
 
 ko.applyBindings(viewModel)
 

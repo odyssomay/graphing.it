@@ -61,27 +61,29 @@
 							<table id="range">
 								<tr>
 									<td>
-										<input type="text" data-bind="value: range_x_min_raw">
+										<input type="text" data-bind="number_value: range_x_min">
 									</td>
 									<td>
-										<input type="text" data-bind="value: range_y_max_raw"><br>
-										<input type="text" data-bind="value: range_y_min_raw">
+										<input type="text" data-bind="number_value: range_y_max"><br>
+										<input type="text" data-bind="number_value: range_y_min">
 									</td>
 									<td>
-										<input type="text" data-bind="value: range_x_max_raw">
+										<input type="text" data-bind="number_value: range_x_max">
 									</td>
 								</tr>
 							</table>
 						</td>
 						<td>
 							x
-							<input type="text" data-bind="value: grid_distance_x_raw" style="display:inline; width: 3em;">
+							<input type="text" data-bind="number_value: grid_distance_x, min: 0.01" 
+								style="display:inline; width: 3em;">
 							<br>
 							y
-							<input type="text" data-bind="value: grid_distance_y_raw" style="display:inline; width: 3em">
+							<input type="text" data-bind="number_value: grid_distance_y, min: 0.01" 
+								style="display:inline; width: 3em">
 						</td>
 						<td>
-							<input type="text" style="width: 3em;" data-bind="value: step_size_raw">
+							<input type="text" style="width: 3em;" data-bind="number_value: step_size, min: 0.0001">
 						</td>
 					</tr>
 				</table>
@@ -152,6 +154,18 @@
 								</td>
 							</tr>
 						</table>
+						<div data-bind="visible: type() == 'Standard'">
+						</div>
+						<div data-bind="visible: type() == 'Polar'">
+							Range
+							<input type="text" data-bind="">
+							<input type="text" data-bind="">
+						</div>
+						<div data-bind="visible: type() == 'Parametric'">
+							Range
+							<input type="text" data-bind="">
+							<input type="text" data-bind="">
+						</div>
 					</div>
 				</div>
 				<div class="threecol last">

@@ -1,8 +1,26 @@
 (function() {
-  var a_p, add_function, animate, animations, axes_object, calculate_parametric_points, calculate_points, calculate_polar_points, calculate_standard_points, construct_path, draw_axes, draw_border, draw_grid, draw_path, example_functions, get_paper_x, get_paper_y, get_range_x, get_range_y, grid_object, init_button, init_fn_object, number_observable, options_string, paper, r, r_p, rand_nth, random, redraw, redraw_button, s_b, save_button, start_animation, transform_points, v_o_p, viewModel, view_options;
-  example_functions = ["sin(x)", "x * tan(x)", "pow(x, x)", "sin(1/x)", "tan(x) * sin(x)", "cos(tan(x))", "x * tan(x) * sin(x)", "sin(x) * x", "cos(tan(x)) / sin(x)", "pow(abs(x), cos(x))", "pow(abs(x), sin(x))"];
+  var a_p, add_function, animate, animations, axes_object, calculate_parametric_points, calculate_points, calculate_polar_points, calculate_standard_points, construct_path, draw_axes, draw_border, draw_grid, draw_path, get_paper_x, get_paper_y, get_range_x, get_range_y, grid_object, init_button, init_fn_object, new_fn_object, options_string, paper, polar_example_functions, r, r_p, rand_nth, random, redraw, redraw_button, s_b, save_button, standard_example_functions, start_animation, transform_points, v_o_p, viewModel, view_options;
+  standard_example_functions = ["sin(x)", "x * tan(x)", "pow(x, x)", "sin(1/x)", "tan(x) * sin(x)", "cos(tan(x))", "x * tan(x) * sin(x)", "sin(x) * x", "cos(tan(x)) / sin(x)", "pow(abs(x), cos(x))", "pow(abs(x), sin(x))"];
+  polar_example_functions = ["pow(x, 1.5) * sin(x) * cos(x)", "x * sin(x)"];
   rand_nth = function(coll) {
     return coll[Math.floor(Math.random() * coll.length)];
+  };
+  new_fn_object = function(prev_id) {
+    return {
+      polar_range_min: 0,
+      polar_range_max: 10,
+      polar_step_size: 0.01,
+      para_range_min: 0,
+      para_range_max: 10,
+      para_step_size: 0.01,
+      type: ko.observable("Standard"),
+      source: rand_nth(standard_example_functions),
+      source_polar: rand_nth(polar_example_functions),
+      source_para_x: "sin(t)",
+      source_para_y: "cos(t)",
+      stroke: "#" + random(9) + random(9) + random(9),
+      id: 1 + prev_id
+    };
   };
   random = function(max) {
     return Math.round(Math.random() * max);
@@ -10,7 +28,7 @@
   viewModel = {
     functions: ko.observableArray([]),
     add_function: function() {
-      var new_fn_object, obj, prev_id;
+      var f, obj, prev_id;
       prev_id = Math.max.apply(null, (function() {
         var _i, _len, _ref, _results;
         _ref = this.functions();
@@ -24,23 +42,9 @@
       if (this.functions().length === 0) {
         prev_id = 0;
       }
-      new_fn_object = {
-        polar_range_min: 0,
-        polar_range_max: 10,
-        polar_step_size: 0.01,
-        para_range_min: 0,
-        para_range_max: 10,
-        para_step_size: 0.01,
-        type: ko.observable("Standard"),
-        source: rand_nth(example_functions),
-        source_polar: "x * sin(x)",
-        source_para_x: "sin(t)",
-        source_para_y: "cos(t)",
-        stroke: "#" + random(9) + random(9) + random(9),
-        id: 1 + prev_id
-      };
-      this.functions.push(new_fn_object);
-      return init_fn_object(new_fn_object);
+      f = new_fn_object(prev_id);
+      this.functions.push(f);
+      return init_fn_object(f);
     },
     range_x_min: ko.observable(-10),
     range_x_max: ko.observable(10),
@@ -50,34 +54,29 @@
     grid_distance_y: ko.observable(1),
     step_size: ko.observable(0.01)
   };
-  number_observable = function(obj, min, max, default_value) {
-    return ko.dependentObservable({
-      read: function() {
-        return String(obj());
-      },
-      write: function(value) {
-        var v;
-        v = parseFloat(value);
+  ko.bindingHandlers.number_value = {
+    init: function(element, valueAccessor, allBindingsAccessor, viewModel) {
+      return $(element).focusout(function() {
+        var ab, v;
+        ab = allBindingsAccessor();
+        v = parseFloat($(element).val());
         if (isNaN(v)) {
-          v = default_value;
+          return $(element).val(String(valueAccessor()()));
+        } else {
+          if (ab.min != null) {
+            v = Math.max(ab.min, v);
+          }
+          if (ab.max != null) {
+            v = Math.min(v, ab.max);
+          }
+          return valueAccessor()(v);
         }
-        if (!min === null) {
-          v = Math.max(min, v);
-        }
-        if (!max === null) {
-          v = Math.min(v, max);
-        }
-        return obj(v);
-      }
-    });
+      });
+    },
+    update: function(element, valueAccessor, allBindingsAccessor, viewModel) {
+      return $(element).val(String(valueAccessor()()));
+    }
   };
-  viewModel.step_size_raw = number_observable(viewModel.step_size, 0.0001, null, 0.1);
-  viewModel.range_x_min_raw = number_observable(viewModel.range_x_min, null, null, -10);
-  viewModel.range_x_max_raw = number_observable(viewModel.range_x_max, null, null, 10);
-  viewModel.range_y_min_raw = number_observable(viewModel.range_y_min, null, null, -10);
-  viewModel.range_y_max_raw = number_observable(viewModel.range_y_max, null, null, 10);
-  viewModel.grid_distance_x_raw = number_observable(viewModel.grid_distance_x, 0.01, null, 1);
-  viewModel.grid_distance_y_raw = number_observable(viewModel.grid_distance_y, 0.01, null, 1);
   ko.applyBindings(viewModel);
   get_range_x = function() {
     return [viewModel.range_x_min(), viewModel.range_x_max()];
