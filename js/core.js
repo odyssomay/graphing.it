@@ -287,7 +287,6 @@
     var animation, fn_error_id, path_string, points, t_points;
     fn_error_id = '#function_error' + fn_object.id;
     try {
-      $(fn_error_id).text("...");
       points = calculate_points(fn_object);
       t_points = transform_points(points);
       path_string = 'M' + construct_path(t_points).substr(1);
