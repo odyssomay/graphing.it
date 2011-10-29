@@ -1,5 +1,4 @@
 
-console.log(ko.bindingHandlers)
 
 standard_example_functions = ["sin(x)", "x * tan(x)", "pow(x, x)", 
   "sin(1/x)", "tan(x) * sin(x)", "cos(tan(x))",
