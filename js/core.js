@@ -1,6 +1,5 @@
 (function() {
   var a_p, add_function, animate, animations, axes_object, calculate_parametric_points, calculate_points, calculate_polar_points, calculate_standard_points, construct_path, draw_axes, draw_border, draw_grid, draw_path, e, get_paper_x, get_paper_y, get_range_x, get_range_y, grid_object, init_button, init_fn_object, new_fn_object, options_string, paper, polar_example_functions, r, r_p, rand_nth, random, redraw, redraw_button, standard_example_functions, start_animation, transform_points, v_o_p, viewModel, view_options, _i, _j, _len, _len2, _ref, _ref2;
-  console.log(ko.bindingHandlers);
   standard_example_functions = ["sin(x)", "x * tan(x)", "pow(x, x)", "sin(1/x)", "tan(x) * sin(x)", "cos(tan(x))", "x * tan(x) * sin(x)", "sin(x) * x", "cos(tan(x)) / sin(x)", "pow(abs(x), cos(x))", "pow(abs(x), sin(x))"];
   polar_example_functions = ["pow(x, 1.5) * sin(x) * cos(x)", "x * sin(x)"];
   rand_nth = function(coll) {
@@ -343,7 +342,7 @@
     $('#' + html_id).click(function() {
       return $('#' + 'fn_options_content' + fn_object.id).slideToggle(200);
     });
-    cw = Raphael.colorwheel($('#' + 'fn_stroke_color' + fn_object.id), 90, 80);
+    cw = Raphael.colorwheel($('#' + 'fn_stroke_color' + fn_object.id), 120, 100);
     cw.color(fn_object.stroke);
     cw.onchange(function(color) {
       var s;

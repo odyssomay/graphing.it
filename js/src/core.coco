@@ -278,7 +278,7 @@ init_fn_object = (fn_object) ->
   # slide options visible
   $('#' + html_id).click -> $('#' + 'fn_options_content' + fn_object.id).slideToggle(200)
   # color picker
-  cw = Raphael.colorwheel($('#' + 'fn_stroke_color' + fn_object.id), 90, 80)
+  cw = Raphael.colorwheel($('#' + 'fn_stroke_color' + fn_object.id), 120, 100)
   #cw = Raphael.colorwheel(40, 20, 300, "#eee")
   cw.color(fn_object.stroke)
   cw.onchange (color) -> 

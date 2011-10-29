@@ -231,6 +231,7 @@ Raphael.colorwheel = function(target, color_wheel_size, no_segments){
     var y = Math.sin(radians(d)) * (center-tri_size-padding);
     hue_ring.cursor.attr({cx:x+center, cy:y+center}).translate(0,0);
     set_hue("hsb("+(d+90)/360+",1,1)");
+    //set_hue("hsb(" + d*(1/segments) +",1,1)");
   }
 
   function bs_square_dim(){
@@ -259,6 +260,7 @@ Raphael.colorwheel = function(target, color_wheel_size, no_segments){
 
   function hue_segement_shape(){
     var path = "M -@W 0 L @W 0 L @W @H L -@W @H z";
+    //path = "m0,0 l0,1 l @H,1 l @H, 0 z" 
     return path.replace(/@H/img, tri_size*2).replace(/@W/img,tri_size);
   }
 
@@ -266,7 +268,8 @@ Raphael.colorwheel = function(target, color_wheel_size, no_segments){
     var n = r.clone();
     var hue = d*(255/k);
 
-    n.rotate((360/k)*d, (size/2), size/2);
+    n.rotate((360/k)*d, 0, size/2 - padding);
+    //n.rotate((360/k)*d, (size/2), size/2);
     n.attr({"stroke-width":0, fill:"hsb("+d*(1/k)+", 1, 0.85)"});
     hue_ring.hues.push(n);
   }
@@ -291,7 +294,14 @@ Raphael.colorwheel = function(target, color_wheel_size, no_segments){
       center,
       center-tri_size-padding).attr({"stroke":"#000", "stroke-width":(tri_size*2)+3, opacity:0.1});
     hue_ring.outline.toBack();
-    hue_ring.event.node.style.cursor = "crosshair";
+    hue_ring.event.node.style.cursor = "crosshair"; 
+
+    var stroke_width = tri_size/3
+	c_outer = canvas.circle(size/2, size/2, size/2 - stroke_width/2),
+	c_inner = canvas.circle(size/2, size/2, size/2- (tri_size * 2 + stroke_width)),
+	attrs = {'stroke': '#fff', 'stroke-width': tri_size/3};
+    c_outer.attr(attrs);
+    c_inner.attr(attrs);
   }
 
   function run_onchange_event(){
