@@ -1,4 +1,6 @@
 
+console.log(ko.bindingHandlers)
+
 standard_example_functions = ["sin(x)", "x * tan(x)", "pow(x, x)", 
   "sin(1/x)", "tan(x) * sin(x)", "cos(tan(x))",
   "x * tan(x) * sin(x)", "sin(x) * x", "cos(tan(x)) / sin(x)",
@@ -10,13 +12,13 @@ rand_nth = (coll) ->
   coll[Math.floor(Math.random() * coll.length)]
 
 new_fn_object = (prev_id) -> {
-  polar_range_min: 0
-  polar_range_max: 10
-  polar_step_size: 0.01
+  polar_range_min: ko.observable 0
+  polar_range_max: ko.observable 10
+  polar_step_size: ko.observable 0.01
   
-  para_range_min: 0
-  para_range_max: 10
-  para_step_size: 0.01
+  para_range_min: ko.observable 0
+  para_range_max: ko.observable 10
+  para_step_size: ko.observable 0.01
   
   type: ko.observable("Standard")
   source: rand_nth(standard_example_functions)
@@ -57,8 +59,9 @@ ko.bindingHandlers.number_value = {
     $(element).focusout ->
       ab = allBindingsAccessor()
       raw_value = $(element).val()
+      current_value = ko.utils.unwrapObservable(valueAccessor())
       if isNaN(raw_value) #or (not_eq and v == not_eq)
-        $(element).val(String(valueAccessor()()))
+        $(element).val(String(current_value))
       else
         v = parseFloat(raw_value)
         if ab.min? then v = Math.max(ab.min, v)
@@ -187,13 +190,13 @@ calculate_standard_points = (f) ->
     [x, f(x)]
 
 calculate_polar_points = (fn_object, f) ->
-  for x in [fn_object.polar_range_min..fn_object.polar_range_max] by fn_object.polar_step_size
+  for x in [fn_object.polar_range_min()..fn_object.polar_range_max()] by fn_object.polar_step_size()
     r = f(x)
     [r * Math.cos(x), 
      r * Math.sin(x)]
 
 calculate_parametric_points = (fn_object, f_x, f_y) ->
-  for t in [fn_object.para_range_min..fn_object.para_range_max] by fn_object.para_step_size
+  for t in [fn_object.para_range_min()..fn_object.para_range_max()] by fn_object.para_step_size()
     [f_x(t), f_y(t)]
 
 calculate_points = (fn_object) ->
@@ -318,9 +321,9 @@ $('#view_options').click -> $('#draw_options_content').slideToggle(200)
 
 # save button
 
-save_button = Raphael("save_button", 40, 40)
-s_b = save_button.path("M16,1.466C7.973,1.466,1.466,7.973,1.466,16c0,8.027,6.507,14.534,14.534,14.534c8.027,0,14.534-6.507,14.534-14.534C30.534,7.973,24.027,1.466,16,1.466zM16,28.792c-1.549,0-2.806-1.256-2.806-2.806s1.256-2.806,2.806-2.806c1.55,0,2.806,1.256,2.806,2.806S17.55,28.792,16,28.792zM16,21.087l-7.858-6.562h3.469V5.747h8.779v8.778h3.468L16,21.087z")
-init_button(s_b, '#save_button')
+#save_button = Raphael("save_button", 40, 40)
+#s_b = save_button.path("M16,1.466C7.973,1.466,1.466,7.973,1.466,16c0,8.027,6.507,14.534,14.534,14.534c8.027,0,14.534-6.507,14.534-14.534C30.534,7.973,24.027,1.466,16,1.466zM16,28.792c-1.549,0-2.806-1.256-2.806-2.806s1.256-2.806,2.806-2.806c1.55,0,2.806,1.256,2.806,2.806S17.55,28.792,16,28.792zM16,21.087l-7.858-6.562h3.469V5.747h8.779v8.778h3.468L16,21.087z")
+#init_button(s_b, '#save_button')
 
 # add function
 add_function = Raphael("add_function", 40, 40)

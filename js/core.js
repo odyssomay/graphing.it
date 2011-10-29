@@ -1,5 +1,6 @@
 (function() {
-  var a_p, add_function, animate, animations, axes_object, calculate_parametric_points, calculate_points, calculate_polar_points, calculate_standard_points, construct_path, draw_axes, draw_border, draw_grid, draw_path, e, get_paper_x, get_paper_y, get_range_x, get_range_y, grid_object, init_button, init_fn_object, new_fn_object, options_string, paper, polar_example_functions, r, r_p, rand_nth, random, redraw, redraw_button, s_b, save_button, standard_example_functions, start_animation, transform_points, v_o_p, viewModel, view_options, _i, _j, _len, _len2, _ref, _ref2;
+  var a_p, add_function, animate, animations, axes_object, calculate_parametric_points, calculate_points, calculate_polar_points, calculate_standard_points, construct_path, draw_axes, draw_border, draw_grid, draw_path, e, get_paper_x, get_paper_y, get_range_x, get_range_y, grid_object, init_button, init_fn_object, new_fn_object, options_string, paper, polar_example_functions, r, r_p, rand_nth, random, redraw, redraw_button, standard_example_functions, start_animation, transform_points, v_o_p, viewModel, view_options, _i, _j, _len, _len2, _ref, _ref2;
+  console.log(ko.bindingHandlers);
   standard_example_functions = ["sin(x)", "x * tan(x)", "pow(x, x)", "sin(1/x)", "tan(x) * sin(x)", "cos(tan(x))", "x * tan(x) * sin(x)", "sin(x) * x", "cos(tan(x)) / sin(x)", "pow(abs(x), cos(x))", "pow(abs(x), sin(x))"];
   polar_example_functions = ["pow(x, 1.5) * sin(x) * cos(x)", "x * sin(x)"];
   rand_nth = function(coll) {
@@ -7,12 +8,12 @@
   };
   new_fn_object = function(prev_id) {
     return {
-      polar_range_min: 0,
-      polar_range_max: 10,
-      polar_step_size: 0.01,
-      para_range_min: 0,
-      para_range_max: 10,
-      para_step_size: 0.01,
+      polar_range_min: ko.observable(0),
+      polar_range_max: ko.observable(10),
+      polar_step_size: ko.observable(0.01),
+      para_range_min: ko.observable(0),
+      para_range_max: ko.observable(10),
+      para_step_size: ko.observable(0.01),
       type: ko.observable("Standard"),
       source: rand_nth(standard_example_functions),
       source_polar: rand_nth(polar_example_functions),
@@ -57,11 +58,12 @@
   ko.bindingHandlers.number_value = {
     init: function(element, valueAccessor, allBindingsAccessor, viewModel) {
       return $(element).focusout(function() {
-        var ab, raw_value, v;
+        var ab, current_value, raw_value, v;
         ab = allBindingsAccessor();
         raw_value = $(element).val();
+        current_value = ko.utils.unwrapObservable(valueAccessor());
         if (isNaN(raw_value)) {
-          return $(element).val(String(valueAccessor()()));
+          return $(element).val(String(current_value));
         } else {
           v = parseFloat(raw_value);
           if (ab.min != null) {
@@ -230,7 +232,7 @@
   calculate_polar_points = function(fn_object, f) {
     var r, x, _ref3, _ref4, _ref5, _results;
     _results = [];
-    for (x = _ref3 = fn_object.polar_range_min, _ref4 = fn_object.polar_range_max, _ref5 = fn_object.polar_step_size; _ref3 <= _ref4 ? x <= _ref4 : x >= _ref4; x += _ref5) {
+    for (x = _ref3 = fn_object.polar_range_min(), _ref4 = fn_object.polar_range_max(), _ref5 = fn_object.polar_step_size(); _ref3 <= _ref4 ? x <= _ref4 : x >= _ref4; x += _ref5) {
       r = f(x);
       _results.push([r * Math.cos(x), r * Math.sin(x)]);
     }
@@ -239,7 +241,7 @@
   calculate_parametric_points = function(fn_object, f_x, f_y) {
     var t, _ref3, _ref4, _ref5, _results;
     _results = [];
-    for (t = _ref3 = fn_object.para_range_min, _ref4 = fn_object.para_range_max, _ref5 = fn_object.para_step_size; _ref3 <= _ref4 ? t <= _ref4 : t >= _ref4; t += _ref5) {
+    for (t = _ref3 = fn_object.para_range_min(), _ref4 = fn_object.para_range_max(), _ref5 = fn_object.para_step_size(); _ref3 <= _ref4 ? t <= _ref4 : t >= _ref4; t += _ref5) {
       _results.push([f_x(t), f_y(t)]);
     }
     return _results;
@@ -375,9 +377,6 @@
   $('#view_options').click(function() {
     return $('#draw_options_content').slideToggle(200);
   });
-  save_button = Raphael("save_button", 40, 40);
-  s_b = save_button.path("M16,1.466C7.973,1.466,1.466,7.973,1.466,16c0,8.027,6.507,14.534,14.534,14.534c8.027,0,14.534-6.507,14.534-14.534C30.534,7.973,24.027,1.466,16,1.466zM16,28.792c-1.549,0-2.806-1.256-2.806-2.806s1.256-2.806,2.806-2.806c1.55,0,2.806,1.256,2.806,2.806S17.55,28.792,16,28.792zM16,21.087l-7.858-6.562h3.469V5.747h8.779v8.778h3.468L16,21.087z");
-  init_button(s_b, '#save_button');
   add_function = Raphael("add_function", 40, 40);
   a_p = add_function.path("M25.979,12.896 19.312,12.896 19.312,6.229 12.647,6.229 12.647,12.896 5.979,12.896 5.979,19.562 12.647,19.562 12.647,26.229 19.312,26.229 19.312,19.562 25.979,19.562z");
   init_button(a_p, '#add_function');

@@ -165,13 +165,13 @@
 						</div>
 						<div data-bind="visible: type() == 'Polar'">
 							Range
-							<input type="text" data-bind="">
-							<input type="text" data-bind="">
+							<input type="text" data-bind="number_value: polar_range_min">
+							<input type="text" data-bind="number_value: polar_range_max">
 						</div>
 						<div data-bind="visible: type() == 'Parametric'">
 							Range
-							<input type="text" data-bind="">
-							<input type="text" data-bind="">
+							<input type="text" data-bind="number_value: para_range_min">
+							<input type="text" data-bind="number_value: para_range_max">
 						</div>
 					</div>
 				</div>

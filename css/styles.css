@@ -93,7 +93,7 @@ textarea {
 }
 
 input[type="text"] {
-	width: 100%;
+	width: 3em;
 	border: none;
 	border-radius: 3px;
 	padding: 5px;
