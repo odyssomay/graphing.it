@@ -1,5 +1,5 @@
 (function() {
-  var a_p, add_function, animate, animations, axes_object, calculate_parametric_points, calculate_points, calculate_polar_points, calculate_standard_points, construct_path, draw_axes, draw_border, draw_grid, draw_path, e, get_paper_x, get_paper_y, get_range_x, get_range_y, grid_object, init_button, init_fn_object, new_fn_object, options_string, paper, polar_example_functions, r, r_p, rand_nth, random, redraw, redraw_button, standard_example_functions, start_animation, transform_points, v_o_p, viewModel, view_options, _i, _j, _len, _len2, _ref, _ref2;
+  var a_p, add_function, animate, animations, axes_object, calculate_parametric_points, calculate_points, calculate_polar_points, calculate_standard_points, construct_path, coordinate_animation, coordinate_animations, draw_axes, draw_border, draw_grid, draw_path, e, get_paper_x, get_paper_y, get_range_x, get_range_y, grid_object, init_button, init_fn_object, new_fn_object, options_string, paper, polar_example_functions, r, r_p, rand_nth, random, redraw, redraw_button, standard_example_functions, start_animations, transform_points, v_o_p, viewModel, view_options, _i, _j, _len, _len2, _ref, _ref2;
   standard_example_functions = ["sin(x)", "x * tan(x)", "pow(x, x)", "sin(1/x)", "tan(x) * sin(x)", "cos(tan(x))", "x * tan(x) * sin(x)", "sin(x) * x", "cos(tan(x)) / sin(x)", "pow(abs(x), cos(x))", "pow(abs(x), sin(x))"];
   polar_example_functions = ["pow(x, 1.5) * sin(x) * cos(x)", "x * sin(x)"];
   rand_nth = function(coll) {
@@ -88,13 +88,21 @@
   };
   paper = Raphael("draw_area", 300, 300);
   animations = [];
-  animate = function(obj, animation) {
-    return animations.push({
-      obj: obj,
-      ani: animation
-    });
+  coordinate_animation = false;
+  coordinate_animations = function() {
+    return coordinate_animation = true;
   };
-  start_animation = function() {
+  animate = function(obj, animation) {
+    if (coordinate_animation) {
+      return animations.push({
+        obj: obj,
+        ani: animation
+      });
+    } else {
+      return obj.animate(animation);
+    }
+  };
+  start_animations = function() {
     var ani, animating_animation, animating_object, obj, _i, _len, _ref, _ref2;
     if (animations.length > 0) {
       animating_object = animations[0].obj;
@@ -105,7 +113,8 @@
         _ref2 = _ref[_i], obj = _ref2.obj, ani = _ref2.ani;
         obj.animateWith(animating_object, animating_animation, ani);
       }
-      return animations = [];
+      animations = [];
+      return coordinate_animation = false;
     }
   };
   get_paper_x = function(x) {
@@ -125,7 +134,7 @@
     p_y = "M" + get_paper_x(0) + ",0L" + get_paper_x(0) + "," + get_paper_y(get_range_y()[0]);
     p = p_x + p_y;
     if (axes_object) {
-      return axes_object.animate(Raphael.animation({
+      return animate(axes_object, Raphael.animation({
         path: p
       }, 300, "<>"));
     } else {
@@ -188,7 +197,7 @@
     }
     p = x_path_neg.join("") + x_path_pos.join("") + y_path_neg.join("") + y_path_pos.join("");
     if (grid_object) {
-      return grid_object.animate(Raphael.animation({
+      return animate(grid_object, Raphael.animation({
         path: p
       }, 300, "<>"));
     } else {
@@ -304,6 +313,7 @@
   };
   redraw = function() {
     var fn_object, _k, _len3, _ref3;
+    coordinate_animations();
     draw_grid();
     draw_axes();
     _ref3 = viewModel.functions();
@@ -312,7 +322,7 @@
       draw_path(fn_object);
     }
     draw_border();
-    return start_animation();
+    return start_animations();
   };
   r = paper.rect(0, 0, paper.width, paper.height);
   r.attr("fill", "#fff");

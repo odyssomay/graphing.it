@@ -90,11 +90,18 @@ paper = Raphael("draw_area", 300, 300)
 # coordinate animations
 
 animations = []
+coordinate_animation = false
+
+coordinate_animations = () ->
+  coordinate_animation = true
 
 animate = (obj, animation) ->
-  animations.push({obj: obj, ani: animation})
+  if coordinate_animation
+    animations.push({obj: obj, ani: animation})
+  else
+    obj.animate(animation)
   
-start_animation = () ->
+start_animations = () ->
   if animations.length > 0
     animating_object = animations[0].obj
     animating_animation = animations[0].ani
@@ -102,6 +109,7 @@ start_animation = () ->
     for {obj, ani} in animations[1..-1]
       obj.animateWith(animating_object, animating_animation, ani)
     animations = []
+    coordinate_animation = false
     
 # ---------------------------------------
 # convert mathematical coordinates to paper coordinates
@@ -123,7 +131,7 @@ draw_axes = ->
   p_y = "M" + get_paper_x(0) + ",0L" + get_paper_x(0) + "," + get_paper_y(get_range_y()[0])
   p = p_x + p_y
   if axes_object
-    axes_object.animate(Raphael.animation({path: p}, 300, "<>"))
+    animate(axes_object, Raphael.animation({path: p}, 300, "<>"))
   else
     axes_object = paper.path(p)
     axes_object.attr("stroke-width", "2")
@@ -158,7 +166,7 @@ draw_grid = ->
 
   p = x_path_neg.join("") + x_path_pos.join("") + y_path_neg.join("") + y_path_pos.join("")
   if grid_object
-    grid_object.animate(Raphael.animation({path: p}, 300, "<>"))
+    animate(grid_object, Raphael.animation({path: p}, 300, "<>"))
   else
     grid_object = paper.path(p)
     grid_object.attr({"stroke-width": "2", "stroke": "#EEE"})
@@ -244,12 +252,13 @@ draw_path = (fn_object) ->
     $(fn_error_id).fadeIn(400)
 
 redraw = ->
+  coordinate_animations()
   draw_grid()
   draw_axes()
   for fn_object in viewModel.functions()
     draw_path(fn_object)
   draw_border()
-  start_animation()
+  start_animations()
 
 r = paper.rect(0, 0, paper.width, paper.height)
 r.attr("fill", "#fff")
