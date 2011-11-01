@@ -374,13 +374,13 @@
   };
   viewModel.add_function();
   redraw();
-  redraw_button = Raphael("redraw_button", 40, 40);
+  redraw_button = Raphael("redraw_button", 30, 30);
   r_p = redraw_button.path("M15.999,4.308c1.229,0.001,2.403,0.214,3.515,0.57L18.634,6.4h6.247l-1.562-2.706L21.758,0.99l-0.822,1.425c-1.54-0.563-3.2-0.878-4.936-0.878c-7.991,0-14.468,6.477-14.468,14.468c0,3.317,1.128,6.364,3.005,8.805l2.2-1.689c-1.518-1.973-2.431-4.435-2.436-7.115C4.312,9.545,9.539,4.318,15.999,4.308zM27.463,7.203l-2.2,1.69c1.518,1.972,2.431,4.433,2.435,7.114c-0.011,6.46-5.238,11.687-11.698,11.698c-1.145-0.002-2.24-0.188-3.284-0.499l0.828-1.432H7.297l1.561,2.704l1.562,2.707l0.871-1.511c1.477,0.514,3.058,0.801,4.709,0.802c7.992-0.002,14.468-6.479,14.47-14.47C30.468,12.689,29.339,9.643,27.463,7.203z");
   init_button(r_p, '#redraw_button');
   $('#redraw_button').click(function() {
     return redraw();
   });
-  view_options = Raphael("view_options", 40, 40);
+  view_options = Raphael("view_options", 30, 30);
   v_o_p = view_options.path(options_string);
   init_button(v_o_p, '#view_options');
   $('#view_options').click(function() {
