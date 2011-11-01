@@ -176,7 +176,7 @@ button:hover {
 #add_function, #redraw_button {
 	text-align: center;
 	margin-top: 5px;
-	margin-bottom: -5px;
+/*	margin-bottom: -5px;*/
 }
 
 .button_enclosing {
