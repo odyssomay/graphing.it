@@ -109,7 +109,7 @@
 		
 		<div class="row">
 			<div class="fivecol"> </div>
-			<div class="twocol" id="add_function_enclosing" data-bind="click: add_function">
+			<div class="twocol button_enclosing" data-bind="click: add_function">
 				<div id="add_function"></div>
 				add function
 			</div>
@@ -118,8 +118,11 @@
 		<script type="text/html" id="functionTemplate">
 			<div class="row">
 				<div class="twocol"></div>
-				<div class="onecol" style="text-align: right; position: relative; left: 3.3%">
-					<div id="fn_options_button${ id }"></div>
+				<div class="onecol" style="position: relative; right: -2.5%;">
+					<div class="button_enclosing" id="function_option_enclosing${ id }"> 
+						<div id="fn_options_button${ id }"></div>
+						options
+					</div>
 				</div>
 				<div class="sixcol">
 					<div data-bind="visible: type() === 'Standard'" style="position: relative">

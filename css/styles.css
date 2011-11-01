@@ -179,13 +179,13 @@ button:hover {
 	margin-bottom: -5px;
 }
 
-#add_function_enclosing {
+.button_enclosing {
 	color: #333;
 	text-align: center;
 	font-size: 0.7em;
 }
 
-#add_function_enclosing:hover {
+.button_enclosing:hover {
 	color: #000;
 	cursor: pointer;
 }
@@ -231,10 +231,13 @@ button:hover {
 #options_link {
 	height: 1.5em;
 	position: absolute;
-	right: 30%;
 	top: -1.5em;
-	background: red;
+	left: 5px;
+	background: #888;
 	padding: 1px 5px 2px 5px;
+	-webkit-border-top-right-radius: 5px;
+	-moz-border-radius-topright: 5px;
+	border-top-right-radius: 5px;
 }
 
 /* ============================= */
