@@ -277,6 +277,9 @@ button:hover {
 		margin-top: 1em;
 	}
 
+	.function_error_style {
+		left: 0;
+	}
 }
 
 
