@@ -352,7 +352,7 @@
     $('#' + html_id).click(function() {
       return $('#' + 'fn_options_content' + fn_object.id).slideToggle(200);
     });
-    cw = Raphael.colorwheel($('#' + 'fn_stroke_color' + fn_object.id), 120, 100);
+    cw = Raphael.colorwheel($('#' + 'fn_stroke_color' + fn_object.id), 120, 40);
     cw.color(fn_object.stroke);
     cw.onchange(function(color) {
       var s;
@@ -386,7 +386,7 @@
   $('#view_options').click(function() {
     return $('#draw_options_content').slideToggle(200);
   });
-  add_function = Raphael("add_function", 40, 40);
+  add_function = Raphael("add_function", 30, 30);
   a_p = add_function.path("M25.979,12.896 19.312,12.896 19.312,6.229 12.647,6.229 12.647,12.896 5.979,12.896 5.979,19.562 12.647,19.562 12.647,26.229 19.312,26.229 19.312,19.562 25.979,19.562z");
-  init_button(a_p, '#add_function');
+  init_button(a_p, '#add_function_enclosing');
 }).call(this);

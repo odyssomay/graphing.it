@@ -109,8 +109,9 @@
 		
 		<div class="row">
 			<div class="fivecol"> </div>
-			<div class="twocol">
-				<div id="add_function" data-bind="click: add_function"></div>
+			<div class="twocol" id="add_function_enclosing" data-bind="click: add_function">
+				<div id="add_function"></div>
+				add function
 			</div>
 			<div class="fivecol last"> </div>
 		</div>
@@ -130,22 +131,23 @@
 						<textarea data-bind="value: source_polar"></textarea>
 					</div>
 					<div data-bind="visible: type() === 'Parametric'">
-						<table style="width: 100%">
-							<tr>
-								<td>
-									<div style="position: relative">
-										<div class="label_overlay">x</div>
-										<textarea data-bind="value: source_para_x"></textarea>
-									</div>
-								</td>
-								<td style="padding-right: 0;">
-									<div style="position: relative">
-										<div class="label_overlay">y</div>
-										<textarea data-bind="value: source_para_y"></textarea>
-									</div>
-								</td>
-							</table>
+						<div style="position: relative; overflow: auto;">
+							<div style="position: relative; width: 49%; float: left;">
+								<div class="label_overlay">x</div>
+								<textarea style="display: inline" data-bind="value: source_para_x"></textarea>
+							</div>
+							<div style="position: relative; float: right; width: 50%;">
+								<div class="label_overlay">y</div>
+								<textarea style="display: inline" data-bind="value: source_para_y"></textarea>
+							</div>
 						</div>
+					</div>
+					<!--
+					<div style="position: relative;">
+						<div id="options_link">
+							options
+						</div>
+					</div>-->
 					<div id="fn_options_content${ id }" class="fn_options options_box">
 						<table style="width: 100%;">
 							<tr>

@@ -78,12 +78,13 @@ hr {
 }
 
 textarea {
+
+	background: #EEE;
 	border: none;
-	border-radius: 5px;
+	border-left: 5px solid #333;
 	padding: 10px;
 	width: 100%;
 	resize: vertical;
-	box-shadow: inset 1px 1px 3px #333;
 	/* From: http://stackoverflow.com/questions/271067/how-can-i-make-a-textarea-100-width-without-overflowing-when-padding-is-present/4156343#4156343 
 	 * */
 	box-sizing: border-box;
@@ -91,6 +92,7 @@ textarea {
 	-moz-box-sizing: border-box;
 	-ms-box-sizing: border-box;
 }
+
 
 input[type="text"] {
 	width: 3em;
@@ -177,6 +179,17 @@ button:hover {
 	margin-bottom: -5px;
 }
 
+#add_function_enclosing {
+	color: #333;
+	text-align: center;
+	font-size: 0.7em;
+}
+
+#add_function_enclosing:hover {
+	color: #000;
+	cursor: pointer;
+}
+
 .content_area {
 	line-height: 1.5em;
 	margin-top: 6em;
@@ -192,10 +205,9 @@ button:hover {
 	right: 15px;
 	padding: 5px;
 	padding: 2px 10px 4px 10px;
-	background: #AAA;
-	border-radius: 5px;
+	background: #CCC;
+	border-radius: 3px;
 	border: 1px solid #666;
-	box-shadow: 0 1px 1px black;
 }
 
 .function_error_style {
@@ -209,6 +221,15 @@ button:hover {
 	padding: 0.8em;
 }
 	
+
+#options_link {
+	height: 1.5em;
+	position: absolute;
+	right: 30%;
+	top: -1.5em;
+	background: red;
+	padding: 1px 5px 2px 5px;
+}
 
 /* ============================= */
 /* ! Layout for mobile version   */
