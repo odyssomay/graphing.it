@@ -347,7 +347,7 @@
     html_id = 'fn_options_button' + fn_object.id;
     fn_options_button = Raphael(html_id, 30, 30);
     p = fn_options_button.path(options_string);
-    init_button(p, '#' + html_id);
+    init_button(p, '#function_option_enclosing' + fn_object.id);
     p.scale(0.8);
     $('#' + html_id).click(function() {
       return $('#' + 'fn_options_content' + fn_object.id).slideToggle(200);
